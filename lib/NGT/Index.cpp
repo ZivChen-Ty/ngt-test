@@ -621,16 +621,17 @@ NGT::GraphIndex::GraphIndex(const string &database, bool rdOnly, bool graphDisab
 void
 GraphIndex::createIndex()
 {
-  GraphRepository &anngRepo = repository;
-  ObjectRepository &fr = objectSpace->getRepository();
-  size_t	pathAdjustCount = property.pathAdjustmentInterval;
   
-  size_t count = 0;
-  BuildTimeController buildTimeController(*this, NeighborhoodGraph::property);
-  std::vector<std::mutex> locks(fr.size());
 #pragma omp parallel //多线程进行
   {
       NGT::ObjectID id = 1;
+      GraphRepository& anngRepo = repository;
+      ObjectRepository& fr = objectSpace->getRepository();
+      size_t	pathAdjustCount = property.pathAdjustmentInterval;
+
+      size_t count = 0;
+      BuildTimeController buildTimeController(*this, NeighborhoodGraph::property);
+      std::vector<std::mutex> locks(fr.size());
 #pragma omp for schedule(dynamic, 100)
       for (; id < fr.size(); id++) {
           if (id < anngRepo.size() && anngRepo[id] != 0) {
@@ -643,8 +644,10 @@ GraphIndex::createIndex()
               pathAdjustCount += property.pathAdjustmentInterval;
           }
       }
+
 #pragma omp for schedule(dynamic, 100)
-      InterInsert(locks);
+
+       InterInsert(locks);
   }
   
   
