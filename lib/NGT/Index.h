@@ -881,7 +881,9 @@ namespace NGT {
 	std::cerr << std::endl;
       }
     }
-
+    virtual void InterInsert(std::vector<std::mutex>& locks) {
+        InterInsert(locks);
+    }
     virtual void insert(
 			ObjectID id
 			) {

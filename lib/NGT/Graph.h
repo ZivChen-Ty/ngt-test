@@ -689,16 +689,16 @@ namespace NGT {
 
       void insertIANNGNode(ObjectID id, ObjectDistances &results) {
 	repository.insert(id, results);
-	std::cout << "这是标志1" << std::endl;
+	std::cout << "sign1" << std::endl;
 	NGT::ObjectSpace::Comparator& comparator = objectSpace->getComparator();
 	ObjectRepository& objectRepository = getObjectRepository();
-	unsigned start = 0;
+	//unsigned start = 0;
 	float threshold = 0.5; //所选角度的cos值，现在为60度
-	unsigned range = 60;//最大出度（可变）
+	//unsigned range = 60;//最大出度（可变）
 	//std::vector<ObjectDistances> hasAdd;
 	ObjectRepository& fr = objectSpace->getRepository();
 	unsigned nd = fr.size();
-	std::cout << "这是标志nd="<<nd << std::endl;
+	std::cout << "sign nd="<<nd << std::endl;
 	
 
 		for (ObjectDistances::iterator ri = results.begin(); ri != results.end(); ri++) {
@@ -712,9 +712,9 @@ namespace NGT {
 						break;
 					}
 					float djk = comparator(*objectRepository.get((*ri).id), *objectRepository.get(resultNode[t].id));//准备计算ri和hasAdd【t】的距离
-					std::cout << "这是标志第一个地方djk=" << djk << std::endl;
+					std::cout << "sign first djk=" << djk << std::endl;
 					float cos_ij = (resultNode[t].distance + (*ri).distance - djk) / 2 / sqrt((*ri).distance * resultNode[t].distance);
-					std::cout << "这是标志第一个地方cosij=" << cos_ij << std::endl;
+					std::cout << "sign first cosij=" << cos_ij << std::endl;
 					if (cos_ij > threshold) {
 						occlude = true;
 						break;
@@ -743,7 +743,7 @@ namespace NGT {
 		  //std::vector<ObjectDistances> hasAdd;
 		  ObjectRepository& fr = objectSpace->getRepository();
 		  unsigned nd = fr.size();
-		  std::cout << "reverse开始了" << std::endl;
+		  std::cout << "reverse start " << std::endl;
 		  for (NGT::ObjectID n = 1; n < nd; n++) {
 			  GraphNode& node = *getNode(n);
 			  //size_t kEdge = property.edgeSizeForCreation - 1;
@@ -755,7 +755,7 @@ namespace NGT {
 				  std::vector<ObjectDistance> temp_pool;
 				  int dup = 0;
 				  {
-					  std::cout << "第一个啦开始了" << std::endl;
+					  std::cout << "first rever start " << std::endl;
 					  LockGuard guard(locks[des]);
 					  for (NGT::ObjectID j = 1; j < nodeDes.size(); j++) {
 						  if (nodeDes[j].distance < 0)
@@ -781,9 +781,9 @@ namespace NGT {
 								  break;
 							  }
 							  float djk = comparator(*objectRepository.get(p.id), *objectRepository.get(hasAddReverse[t].id));//准备计算ri和hasAdd【t】的距离
-							  std::cout << "第二个disjk=" << djk << std::endl;
+							  std::cout << "second disjk=" << djk << std::endl;
 							  float cos_ij = (hasAddReverse[t].distance + p.distance - djk) / 2 / sqrt(p.distance * hasAddReverse[t].distance);
-							  std::cout << "第二个cosij=" << cos_ij << std::endl;
+							  std::cout << "second cosij=" << cos_ij << std::endl;
 							  if (cos_ij > threshold) {
 								  occludeReverse = true;
 								  break;
