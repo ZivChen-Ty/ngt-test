@@ -745,6 +745,7 @@ namespace NGT {
 		  unsigned nd = fr.size();
 		  std::cout << "reverse start " << std::endl;
 		  for (NGT::ObjectID n = 1; n < nd; n++) {
+			  std::cout << "reverse times " << n << std::endl;
 			  GraphNode& node = *getNode(n);
 			  //size_t kEdge = property.edgeSizeForCreation - 1;
 			  for (NGT::ObjectID i = 0; i < node.size(); i++) {

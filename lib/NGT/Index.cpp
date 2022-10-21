@@ -622,8 +622,6 @@ void
 GraphIndex::createIndex()
 {
   
-#pragma omp parallel //多线程进行
-  {
       NGT::ObjectID id = 1;
       GraphRepository& anngRepo = repository;
       ObjectRepository& fr = objectSpace->getRepository();
@@ -632,7 +630,6 @@ GraphIndex::createIndex()
       size_t count = 0;
       BuildTimeController buildTimeController(*this, NeighborhoodGraph::property);
       std::vector<std::mutex> locks(fr.size());
-#pragma omp for schedule(dynamic, 100)
       for (; id < fr.size(); id++) {
           if (id < anngRepo.size() && anngRepo[id] != 0) {
               continue;
@@ -644,13 +641,7 @@ GraphIndex::createIndex()
               pathAdjustCount += property.pathAdjustmentInterval;
           }
       }
-
-#pragma omp for schedule(dynamic, 100)
-
-       InterInsert(locks);
-  }
-  
-  
+      InterInsert(locks);
   
 }
 
