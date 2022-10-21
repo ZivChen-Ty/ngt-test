@@ -2,3 +2,4 @@ build/
 python/VERSION
 python/dist/
 python/ngt.egg-info/
+/.vs/NGT-1.14.8/v16/Browse.VC.opendb

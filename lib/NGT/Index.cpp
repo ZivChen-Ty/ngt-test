@@ -631,7 +631,7 @@ GraphIndex::createIndex()
     if (id < anngRepo.size() && anngRepo[id] != 0) {
       continue;
     }
-    insert(id);
+    insert(id);//id是要插入的节点id
     buildTimeController.adjustEdgeSize(++count);
     if (pathAdjustCount > 0 && pathAdjustCount <= id) {
       GraphReconstructor::adjustPathsEffectively(static_cast<GraphIndex&>(*this));
