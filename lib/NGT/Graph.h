@@ -769,7 +769,7 @@ namespace NGT {
 					  if (dup)
 						  continue;
 					  temp_pool.push_back(node[0]);
-					  std::vector<GraphNode> hasAddReverse;
+					  std::vector<ObjectDistance> hasAddReverse;
 					  unsigned startReverse = 0;
 					  hasAddReverse.push_back(temp_pool[startReverse]);
 					  while ((++startReverse) < temp_pool.size()) {
