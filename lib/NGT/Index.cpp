@@ -15,6 +15,7 @@
 //
 
 #include	"NGT/defines.h"
+#include	"NGT/Graph.h"
 #include	"NGT/Common.h"
 #include	"NGT/ObjectSpaceRepository.h"
 #include	"NGT/Index.h"
@@ -627,17 +628,27 @@ GraphIndex::createIndex()
   NGT::ObjectID id = 1;
   size_t count = 0;
   BuildTimeController buildTimeController(*this, NeighborhoodGraph::property);
-  for (; id < fr.size(); id++) {
-    if (id < anngRepo.size() && anngRepo[id] != 0) {
-      continue;
-    }
-    insert(id);//id是要插入的节点id
-    buildTimeController.adjustEdgeSize(++count);
-    if (pathAdjustCount > 0 && pathAdjustCount <= id) {
-      GraphReconstructor::adjustPathsEffectively(static_cast<GraphIndex&>(*this));
-      pathAdjustCount += property.pathAdjustmentInterval;
-    }
+  std::vector<std::mutex> locks(fr.size());
+#pragma omp parallel //多线程进行
+  {
+#pragma omp for schedule(dynamic, 100)
+      for (; id < fr.size(); id++) {
+          if (id < anngRepo.size() && anngRepo[id] != 0) {
+              continue;
+          }
+          insert(id);//id是要插入的节点id
+          buildTimeController.adjustEdgeSize(++count);
+          if (pathAdjustCount > 0 && pathAdjustCount <= id) {
+              GraphReconstructor::adjustPathsEffectively(static_cast<GraphIndex&>(*this));
+              pathAdjustCount += property.pathAdjustmentInterval;
+          }
+      }
+#pragma omp for schedule(dynamic, 100)
+      InterInsert(locks);
   }
+  
+  
+  
 }
 
 static size_t

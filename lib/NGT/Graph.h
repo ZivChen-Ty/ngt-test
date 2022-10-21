@@ -18,6 +18,7 @@
 
 #include	<bitset>
 #include	<mutex>
+#include	<iostream>
 #include	"NGT/defines.h"
 #include	"NGT/Common.h"
 #include	"NGT/ObjectSpaceRepository.h"
@@ -56,7 +57,7 @@
 
 namespace NGT {
   class Property;
-
+  typedef std::lock_guard<std::mutex> LockGuard;
   typedef GraphNode	GRAPH_NODE;
 #ifdef NGT_SHARED_MEMORY_ALLOCATOR
   class GraphRepository: public PersistentRepository<GRAPH_NODE> {
@@ -688,21 +689,18 @@ namespace NGT {
 
       void insertIANNGNode(ObjectID id, ObjectDistances &results) {
 	repository.insert(id, results);
-	cout << "这是标志1" << endl;
+	std::cout << "这是标志1" << std::endl;
 	NGT::ObjectSpace::Comparator& comparator = objectSpace->getComparator();
 	ObjectRepository& objectRepository = getObjectRepository();
 	unsigned start = 0;
-	float threshold = 0.5 //所选角度的cos值，现在为60度
+	float threshold = 0.5; //所选角度的cos值，现在为60度
 	unsigned range = 60;//最大出度（可变）
 	//std::vector<ObjectDistances> hasAdd;
 	ObjectRepository& fr = objectSpace->getRepository();
 	unsigned nd = fr.size();
-	cout << "这是标志nd="<<nd << endl;
-	std::vector<std::mutex> locks(nd);
-#pragma omp parallel
-{
-#pragma omp for schedule(dynamic, 100)
-		
+	std::cout << "这是标志nd="<<nd << std::endl;
+	
+
 		for (ObjectDistances::iterator ri = results.begin(); ri != results.end(); ri++) {
 			assert(id != (*ri).id);
 			//if (hasAdd.size() < range) {
@@ -714,9 +712,9 @@ namespace NGT {
 						break;
 					}
 					float djk = comparator(*objectRepository.get((*ri).id), *objectRepository.get(resultNode[t].id));//准备计算ri和hasAdd【t】的距离
-					cout << "这是标志第一个地方djk=" << djk << endl;
+					std::cout << "这是标志第一个地方djk=" << djk << std::endl;
 					float cos_ij = (resultNode[t].distance + (*ri).distance - djk) / 2 / sqrt((*ri).distance * resultNode[t].distance);
-					cout << "这是标志第一个地方cosij=" << cos_ij << endl;
+					std::cout << "这是标志第一个地方cosij=" << cos_ij << std::endl;
 					if (cos_ij > threshold) {
 						occlude = true;
 						break;
@@ -728,70 +726,82 @@ namespace NGT {
 			//}
 
 		}
-#pragma omp for schedule(dynamic, 100)
-		cout << "reverse开始了"<< endl;
-		for (NGT::ObjectID n = 1; n < nd; n++) {
-			GraphNode& node = *getNode(n);
-			//size_t kEdge = property.edgeSizeForCreation - 1;
-			for (NGT::ObjectID i = 0; i < node.size(); i++) {
-				if (node[i].distance < 0)
-					break;
-				NGT::ObjectID des = node[i].id;
-				GraphNode& nodeDes = *getNode(des);
-				std::vector<GraphNode> temp_pool;
-				int dup = 0;
-				{
-					cout << "第一个啦开始了" << endl;
-					std::lock_guard<std::mutex> lockGuard(des);
-					for (NGT::ObjectID j = 1; j < nodeDes.size(); j++) {
-						if (nodeDes[j].distance < 0)
-							break;
-						if (n == nodeDes[j].id) {
-							dup = 1;
-							break;
-						}
-						temp_pool.push_back(nodeDes[j]);
-					}
-					if (dup)
-						continue;
-					temp_pool.push_back(node[0]);
-					std::vector<GraphNode> hasAddReverse;
-					unsigned startReverse = 0;
-					hasAddReverse.push_back(temp_pool[startReverse]);
-					while ((++startReverse) < temp_pool.size()) {
-						bool occludeReverse = false;
-						GraphNode& p = temp_pool[startReverse];
-						for (NGT::ObjectID t = 0; t < hasAddReverse.size(); t++) {
-							if (p.id == hasAddReverse[t].id) {
-								occludeReverse = true;
-								break;
-							}
-							float djk = comparator(*objectRepository.get(p.id), *objectRepository.get(hasAddReverse[t].id));//准备计算ri和hasAdd【t】的距离
-							cout << "第二个disjk=" << djk << endl;
-							float cos_ij = (hasAddReverse[t].distance + p.distance - djk) / 2 / sqrt(p.distance * hasAddReverse[t].distance);
-							cout << "第二个cosij=" << cos_ij << endl;
-							if (cos_ij > threshold) {
-								occludeReverse = true;
-								break;
-							}
-						}
-						if (!occludeReverse) {
-							addEdgeDeletingExcessEdges(p.id, des, p.distance);
-						}
-					}
 
-				}
-				
-
-			}
-		}
-}
-	
+		
 	//:TODO加reverse neighbor
 		
 		
 	return;
       }
+
+	  void InterInsert(std::vector<std::mutex>& locks) {
+		  NGT::ObjectSpace::Comparator& comparator = objectSpace->getComparator();
+		  ObjectRepository& objectRepository = getObjectRepository();
+		  unsigned start = 0;
+		  float threshold = 0.5; //所选角度的cos值，现在为60度
+		  unsigned range = 60;//最大出度（可变）
+		  //std::vector<ObjectDistances> hasAdd;
+		  ObjectRepository& fr = objectSpace->getRepository();
+		  unsigned nd = fr.size();
+		  std::cout << "reverse开始了" << std::endl;
+		  for (NGT::ObjectID n = 1; n < nd; n++) {
+			  GraphNode& node = *getNode(n);
+			  //size_t kEdge = property.edgeSizeForCreation - 1;
+			  for (NGT::ObjectID i = 0; i < node.size(); i++) {
+				  if (node[i].distance < 0)
+					  break;
+				  NGT::ObjectID des = node[i].id;
+				  GraphNode& nodeDes = *getNode(des);
+				  std::vector<ObjectDistance> temp_pool;
+				  int dup = 0;
+				  {
+					  std::cout << "第一个啦开始了" << std::endl;
+					  LockGuard guard(locks[des]);
+					  for (NGT::ObjectID j = 1; j < nodeDes.size(); j++) {
+						  if (nodeDes[j].distance < 0)
+							  break;
+						  if (n == nodeDes[j].id) {
+							  dup = 1;
+							  break;
+						  }
+						  temp_pool.push_back(nodeDes[j]);
+					  }
+					  if (dup)
+						  continue;
+					  temp_pool.push_back(node[0]);
+					  std::vector<GraphNode> hasAddReverse;
+					  unsigned startReverse = 0;
+					  hasAddReverse.push_back(temp_pool[startReverse]);
+					  while ((++startReverse) < temp_pool.size()) {
+						  bool occludeReverse = false;
+						  ObjectDistance& p = temp_pool[startReverse];
+						  for (NGT::ObjectID t = 0; t < hasAddReverse.size(); t++) {
+							  if (p.id == hasAddReverse[t].id) {
+								  occludeReverse = true;
+								  break;
+							  }
+							  float djk = comparator(*objectRepository.get(p.id), *objectRepository.get(hasAddReverse[t].id));//准备计算ri和hasAdd【t】的距离
+							  std::cout << "第二个disjk=" << djk << std::endl;
+							  float cos_ij = (hasAddReverse[t].distance + p.distance - djk) / 2 / sqrt(p.distance * hasAddReverse[t].distance);
+							  std::cout << "第二个cosij=" << cos_ij << std::endl;
+							  if (cos_ij > threshold) {
+								  occludeReverse = true;
+								  break;
+							  }
+						  }
+						  if (!occludeReverse) {
+							  addEdgeDeletingExcessEdges(p.id, des, p.distance);
+						  }
+					  }
+
+				  }
+
+
+			  }
+		  }
+
+
+	  }
 
       void insertONNGNode(ObjectID id, ObjectDistances &results) {
 	if (property.truncationThreshold != 0) {
