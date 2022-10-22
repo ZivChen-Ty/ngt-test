@@ -671,9 +671,46 @@ namespace NGT {
       }
 
       void insertANNGNode(ObjectID id, ObjectDistances &results) {
-		  std::cerr << "iiiiiii" << std::endl;
 	repository.insert(id, results);
-	std::queue<ObjectID> truncateQueue;
+	NGT::ObjectSpace::Comparator& comparator = objectSpace->getComparator();
+	ObjectRepository& objectRepository = getObjectRepository();
+	//unsigned start = 0;
+	float threshold = 0.5; //所选角度的cos值，现在为60度
+	//unsigned range = 60;//最大出度（可变）
+	//std::vector<ObjectDistances> hasAdd;
+	ObjectRepository& fr = objectSpace->getRepository();
+	unsigned nd = fr.size();
+	std::cerr << "sign nd=" << nd << std::endl;
+
+
+	for (ObjectDistances::iterator ri = results.begin(); ri != results.end(); ri++) {
+		assert(id != (*ri).id);
+		//if (hasAdd.size() < range) {
+		GraphNode& resultNode = *getNode((*ri).id);
+		bool occlude = false;
+		for (NGT::ObjectID t = 0; t < resultNode.size(); t++) {
+			if ((*ri).id == resultNode[t].id) {
+				occlude = true;
+				break;
+			}
+			float djk = comparator(*objectRepository.get((*ri).id), *objectRepository.get(resultNode[t].id));//准备计算ri和hasAdd【t】的距离
+			std::cerr << "sign first djk=" << djk << std::endl;
+			float cos_ij = (resultNode[t].distance + (*ri).distance - djk) / 2 / sqrt((*ri).distance * resultNode[t].distance);
+			std::cerr << "sign first cosij=" << cos_ij << std::endl;
+			if (cos_ij > threshold) {
+				occlude = true;
+				break;
+			}
+		}
+		if (!occlude) {
+			addEdgeDeletingExcessEdges((*ri).id, id, (*ri).distance);
+		}
+		//}
+
+	}
+
+
+	/*std::queue<ObjectID> truncateQueue;
 	for (ObjectDistances::iterator ri = results.begin(); ri != results.end(); ri++) {
 	  assert(id != (*ri).id);
 	  if (addEdge((*ri).id, id, (*ri).distance)) {
@@ -684,7 +721,7 @@ namespace NGT {
 	  ObjectID tid = truncateQueue.front();
 	  truncateEdges(tid);
 	  truncateQueue.pop();
-	}
+	}*/
 	return;
       }
 
