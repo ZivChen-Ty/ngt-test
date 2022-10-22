@@ -703,7 +703,9 @@ namespace NGT {
 			}
 		}
 		if (!occlude) {
-			addEdgeDeletingExcessEdges((*ri).id, id, (*ri).distance);
+			GraphNode& node =  *getNode((*ri).id);
+			addEdge(node, id, (*ri).distance, true);
+			//addEdgeDeletingExcessEdges((*ri).id, id, (*ri).distance);
 		}
 		//}
 
