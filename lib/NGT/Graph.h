@@ -688,7 +688,8 @@ namespace NGT {
 		//if (hasAdd.size() < range) {
 		GraphNode& resultNode = *getNode((*ri).id);
 		bool occlude = false;
-		if (resultNode.size() < range) {
+		std::cerr << "resultNodeSize=" << resultNode.size() << std::endl;
+		//if (resultNode.size() < range) {
 			for (NGT::ObjectID t = 0; t < resultNode.size(); t++) {
 				if ((*ri).id == resultNode[t].id) {
 					occlude = true;
@@ -703,10 +704,10 @@ namespace NGT {
 					break;
 				}
 			}
-		}
-		else {
+		//}
+		/*else {
 			occlude = true;
-		}
+		}*/
 		if (!occlude) {
 			std::cerr << "addEdge now" << std::endl;
 			GraphNode& node =  *getNode((*ri).id);
@@ -820,7 +821,7 @@ namespace NGT {
 					  std::vector<ObjectDistance> hasAddReverse;
 					  unsigned startReverse = 0;
 					  hasAddReverse.push_back(temp_pool[startReverse]);
-					  while (hasAddReverse.size() <= range && (++startReverse) < temp_pool.size()) {
+					  while ( (++startReverse) < temp_pool.size()) {
 						  bool occludeReverse = false;
 						  ObjectDistance& p = temp_pool[startReverse];
 						  for (NGT::ObjectID t = 0; t < hasAddReverse.size(); t++) {
