@@ -843,6 +843,7 @@ namespace NGT {
       NGT::SearchContainer sc(po);
       sc.setResults(&result);
       sc.size = NeighborhoodGraph::property.edgeSizeForCreation;
+  std::cerr << "searchK=" << NeighborhoodGraph::property.edgeSizeForCreation << std::endl;
       sc.radius = FLT_MAX;
       sc.explorationCoefficient = NeighborhoodGraph::property.insertionRadiusCoefficient;
       try {

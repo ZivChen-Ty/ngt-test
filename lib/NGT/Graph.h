@@ -676,7 +676,7 @@ namespace NGT {
 	ObjectRepository& objectRepository = getObjectRepository();
 	//unsigned start = 0;
 	float threshold = 0.5; //所选角度的cos值，现在为60度
-	//unsigned range = 60;//最大出度（可变）
+	unsigned range = 100;//最大出度（可变）
 	//std::vector<ObjectDistances> hasAdd;
 	ObjectRepository& fr = objectSpace->getRepository();
 	unsigned nd = fr.size();
@@ -688,23 +688,30 @@ namespace NGT {
 		//if (hasAdd.size() < range) {
 		GraphNode& resultNode = *getNode((*ri).id);
 		bool occlude = false;
-		for (NGT::ObjectID t = 0; t < resultNode.size(); t++) {
-			if ((*ri).id == resultNode[t].id) {
-				occlude = true;
-				break;
-			}
-			float djk = comparator(*objectRepository.get((*ri).id), *objectRepository.get(resultNode[t].id));//准备计算ri和hasAdd【t】的距离
-			std::cerr << "sign first djk=" << djk << std::endl;
-			float cos_ij = (resultNode[t].distance + (*ri).distance - djk) / 2 / sqrt((*ri).distance * resultNode[t].distance);
-			std::cerr << "sign first cosij=" << cos_ij << std::endl;
-			if (cos_ij > threshold) {
-				occlude = true;
-				break;
+		if (resultNode.size() < range) {
+			for (NGT::ObjectID t = 0; t < resultNode.size(); t++) {
+				if ((*ri).id == resultNode[t].id) {
+					occlude = true;
+					break;
+				}
+				float djk = comparator(*objectRepository.get((*ri).id), *objectRepository.get(resultNode[t].id));//准备计算ri和hasAdd【t】的距离
+				std::cerr << "sign first djk=" << djk << std::endl;
+				float cos_ij = (resultNode[t].distance + (*ri).distance - djk) / 2 / sqrt((*ri).distance * resultNode[t].distance);
+				std::cerr << "sign first cosij=" << cos_ij << std::endl;
+				if (cos_ij > threshold) {
+					occlude = true;
+					break;
+				}
 			}
 		}
+		else {
+			occlude = true;
+		}
 		if (!occlude) {
+			std::cerr << "addEdge now" << std::endl;
 			GraphNode& node =  *getNode((*ri).id);
 			addEdge(node, id, (*ri).distance, true);
+			std::cerr << "addEdge finish addId=" << id << "fromId=" << (*ri).id<< std::endl;
 			//addEdgeDeletingExcessEdges((*ri).id, id, (*ri).distance);
 		}
 		//}
@@ -779,7 +786,7 @@ namespace NGT {
 		  ObjectRepository& objectRepository = getObjectRepository();
 		  //unsigned start = 0;
 		  float threshold = 0.5; //所选角度的cos值，现在为60度
-		 // unsigned range = 60;//最大出度（可变）
+		 unsigned range = 100;//最大出度（可变）
 		  //std::vector<ObjectDistances> hasAdd;
 		  ObjectRepository& fr = objectSpace->getRepository();
 		  unsigned nd = fr.size();
@@ -796,7 +803,7 @@ namespace NGT {
 				  std::vector<ObjectDistance> temp_pool;
 				  int dup = 0;
 				  {
-					  std::cerr << "first rever start " << std::endl;
+					  std::cerr << "first reverse start " << std::endl;
 					  LockGuard guard(locks[des]);
 					  for (NGT::ObjectID j = 1; j < nodeDes.size(); j++) {
 						  if (nodeDes[j].distance < 0)
@@ -813,7 +820,7 @@ namespace NGT {
 					  std::vector<ObjectDistance> hasAddReverse;
 					  unsigned startReverse = 0;
 					  hasAddReverse.push_back(temp_pool[startReverse]);
-					  while ((++startReverse) < temp_pool.size()) {
+					  while (hasAddReverse.size() <= range && (++startReverse) < temp_pool.size()) {
 						  bool occludeReverse = false;
 						  ObjectDistance& p = temp_pool[startReverse];
 						  for (NGT::ObjectID t = 0; t < hasAddReverse.size(); t++) {
