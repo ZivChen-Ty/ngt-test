@@ -867,6 +867,7 @@ namespace NGT {
     void searchForKNNGInsertion(Object &po, ObjectID id, ObjectDistances &result) {
       double radius = FLT_MAX;
       size_t size = NeighborhoodGraph::property.edgeSizeForCreation;
+      std::cerr << "searchKNN=" << NeighborhoodGraph::property.edgeSizeForCreation << std::endl;
       if (id > 0) {
 	size = NeighborhoodGraph::property.edgeSizeForCreation + 1;
       }
