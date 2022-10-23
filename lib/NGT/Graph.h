@@ -688,21 +688,24 @@ namespace NGT {
 		//if (hasAdd.size() < range) {
 		GraphNode& resultNode = *getNode((*ri).id);
 		bool occlude = false;
-		std::cerr << "resultNodeSize=" << resultNode.size() << std::endl;
+		
+		int count = 0;
 		//if (resultNode.size() < range) {
-			for (NGT::ObjectID t = 0; t < resultNode.size(); t++) {
-				if ((*ri).id == resultNode[t].id) {
+			for (ObjectDistances::iterator t = resultNode.begin(); t != resultNode.end(); t++) {
+				if ((*ri).id == (*t).id || count > range) {
+					std::cerr << "resultNodesize=" << count << std::endl;
 					occlude = true;
 					break;
 				}
-				float djk = comparator(*objectRepository.get((*ri).id), *objectRepository.get(resultNode[t].id));//准备计算ri和hasAdd【t】的距离
+				float djk = comparator(*objectRepository.get((*ri).id), *objectRepository.get((*t).id));//准备计算ri和hasAdd【t】的距离
 				std::cerr << "sign first djk=" << djk << std::endl;
-				float cos_ij = (resultNode[t].distance + (*ri).distance - djk) / 2 / sqrt((*ri).distance * resultNode[t].distance);
+				float cos_ij = ((*t).distance + (*ri).distance - djk) / 2 / sqrt((*ri).distance * (*t).distance);
 				std::cerr << "sign first cosij=" << cos_ij << std::endl;
 				if (cos_ij > threshold) {
 					occlude = true;
 					break;
 				}
+				count++;
 			}
 		//}
 		/*else {
