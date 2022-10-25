@@ -1263,7 +1263,8 @@ GraphAndTreeIndex::createIndex(size_t threadPoolSize, size_t sizeOfRepository)
 	timerCount += timerInterval;
 	timer.start();
       }
-      InterInsert();
+     
+     // InterInsert();
       buildTimeController.adjustEdgeSize(count);
       if (pathAdjustCount > 0 && pathAdjustCount <= count) {
 	GraphReconstructor::adjustPathsEffectively(static_cast<GraphIndex&>(*this));
@@ -1283,7 +1284,7 @@ GraphAndTreeIndex::createIndex(const vector<pair<NGT::Object*, size_t> > &object
 			       vector<InsertionResult> &ids, 
 			       float range, size_t threadPoolSize)
 {
-    std::cerr << "createGraphAndTreeIndex22222222222==============================" << std::endl;
+    //std::cerr << "createGraphAndTreeIndex22222222222==============================" << std::endl;
   Timer		timer;
   size_t	timerInterval = 100000;
   size_t	timerCount = timerInterval;

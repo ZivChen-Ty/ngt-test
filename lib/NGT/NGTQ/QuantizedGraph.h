@@ -193,6 +193,7 @@ namespace NGTQG {
 
     
     void searchQuantizedGraph(NGT::NeighborhoodGraph &graph, NGTQG::SearchContainer &sc, NGT::ObjectDistances &seeds) {
+		std::cerr << "this is quantized Graph search========================================" << std::endl;
       size_t sizeBackup = sc.size;
       if (sc.resultExpansion > 1.0) {
 	sc.size *= sc.resultExpansion;

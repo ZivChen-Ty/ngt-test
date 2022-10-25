@@ -698,9 +698,9 @@ namespace NGT {
 					break;
 			}
 				float djk = comparator(*objectRepository.get((*ri).id), *objectRepository.get((*t).id));//准备计算ri和hasAdd【t】的距离
-				//std::cerr << "sign first djk=" << djk << std::endl;
+				std::cerr << "sign first djk=" << djk << std::endl;
 				float cos_ij = ((*t).distance + (*ri).distance - djk) / 2 / sqrt((*ri).distance * (*t).distance);
-				//std::cerr << "sign first cosij=" << cos_ij << std::endl;
+				std::cerr << "sign first cosij=" << cos_ij << std::endl;
 				if (cos_ij > threshold) {
 					occlude = true;
 					break;
