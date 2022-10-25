@@ -692,7 +692,7 @@ namespace NGT {
 		int count = 0;
 		//if (resultNode.size() < range) {
 			for (ObjectDistances::iterator t = resultNode.begin(); t != resultNode.end(); t++) {
-				if ((*ri).id == (*t).id || count > range) {
+				if ((*ri).id == (*t).id) {
 					std::cerr << "resultNodesize=" << count << std::endl;
 					occlude = true;
 					break;
