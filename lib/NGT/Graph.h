@@ -712,14 +712,14 @@ namespace NGT {
 			occlude = true;
 		}*/
 		if (!occlude) {
-			GraphNode& node =  *getNode((*ri).id);
-			addEdge(node, id, (*ri).distance, true);
-			//std::cerr << "addEdge finish addId=" << id << "fromId=" << (*ri).id << std::endl;
-			truncateQueue.push((*ri).id);
+			/*GraphNode& node =  *getNode((*ri).id);
+			addEdge(node, id, (*ri).distance, true);*/
+			std::cerr << "addEdge finish addId=" << id << "fromId=" << (*ri).id << std::endl;
+			
 			//std::cerr << "addIf"<< std::endl;
-			/*if (addEdge((*ri).id, id, (*ri).distance)) {
-				
-			}*/
+			if (addEdge((*ri).id, id, (*ri).distance)) {
+				truncateQueue.push((*ri).id);
+			}
 			
 			//addEdgeDeletingExcessEdges((*ri).id, id, (*ri).distance);
 		}
