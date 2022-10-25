@@ -619,7 +619,7 @@ NeighborhoodGraph::setupSeeds(NGT::SearchContainer &sc, ObjectDistances &seeds, 
   void
     NeighborhoodGraph::search(NGT::SearchContainer &sc, ObjectDistances &seeds)
   {
-      std::cerr << "this is normal Graph search========================================" << std::endl;
+      //std::cerr << "this is normal Graph search========================================" << std::endl;
     if (sc.explorationCoefficient == 0.0) {
       sc.explorationCoefficient = NGT_EXPLORATION_COEFFICIENT;
     }

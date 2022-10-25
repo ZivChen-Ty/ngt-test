@@ -698,9 +698,9 @@ namespace NGT {
 					break;
 			}
 				float djk = comparator(*objectRepository.get((*ri).id), *objectRepository.get((*t).id));//准备计算ri和hasAdd【t】的距离
-				std::cerr << "sign first djk=" << djk << std::endl;
+				//std::cerr << "sign first djk=" << djk << std::endl;
 				float cos_ij = ((*t).distance + (*ri).distance - djk) / 2 / sqrt((*ri).distance * (*t).distance);
-				std::cerr << "sign first cosij=" << cos_ij << std::endl;
+				//std::cerr << "sign first cosij=" << cos_ij << std::endl;
 				if (cos_ij > threshold) {
 					occlude = true;
 					break;
@@ -712,13 +712,13 @@ namespace NGT {
 			occlude = true;
 		}*/
 		if (!occlude) {
-			std::cerr << "addEdge now" << std::endl;
 			//GraphNode& node =  *getNode((*ri).id);
 			//addEdge(node, id, (*ri).distance, true);
 			if (addEdge((*ri).id, id, (*ri).distance)) {
+				std::cerr << "addEdge finish addId=" << id << "fromId=" << (*ri).id << std::endl;
 				truncateQueue.push((*ri).id);
 			}
-			std::cerr << "addEdge finish addId=" << id << "fromId=" << (*ri).id<< std::endl;
+			
 			//addEdgeDeletingExcessEdges((*ri).id, id, (*ri).distance);
 		}
 		//}
@@ -734,57 +734,66 @@ namespace NGT {
 	while (!truncateQueue.empty()) {
 	  ObjectID tid = truncateQueue.front();
 	  truncateEdges(tid);
+	  std::cerr << "truncateEdge" << tid  << std::endl;
 	  truncateQueue.pop();
 	}
 	return;
       }
 
-      void insertIANNGNode(ObjectID id, ObjectDistances &results) {
-	repository.insert(id, results);
-	std::cerr << "sign1" << std::endl;
-	NGT::ObjectSpace::Comparator& comparator = objectSpace->getComparator();
-	ObjectRepository& objectRepository = getObjectRepository();
-	//unsigned start = 0;
-	float threshold = 0.5; //所选角度的cos值，现在为60度
-	//unsigned range = 60;//最大出度（可变）
-	//std::vector<ObjectDistances> hasAdd;
-	ObjectRepository& fr = objectSpace->getRepository();
-	unsigned nd = fr.size();
-	std::cerr << "sign nd="<<nd << std::endl;
-	
+	  void insertIANNGNode(ObjectID id, ObjectDistances& results) {
+		  repository.insert(id, results);
+		  for (ObjectDistances::iterator ri = results.begin(); ri != results.end(); ri++) {
+			  assert(id != (*ri).id);
+			  addEdgeDeletingExcessEdges((*ri).id, id, (*ri).distance);
+		  }
+		  return;
+	  }
+ //     void insertIANNGNode(ObjectID id, ObjectDistances &results) {
+	//repository.insert(id, results);
+	//std::cerr << "sign1" << std::endl;
+	//NGT::ObjectSpace::Comparator& comparator = objectSpace->getComparator();
+	//ObjectRepository& objectRepository = getObjectRepository();
+	////unsigned start = 0;
+	//float threshold = 0.5; //所选角度的cos值，现在为60度
+	////unsigned range = 60;//最大出度（可变）
+	////std::vector<ObjectDistances> hasAdd;
+	//ObjectRepository& fr = objectSpace->getRepository();
+	//unsigned nd = fr.size();
+	//std::cerr << "sign nd="<<nd << std::endl;
+	//
 
-		for (ObjectDistances::iterator ri = results.begin(); ri != results.end(); ri++) {
-			assert(id != (*ri).id);
-			//if (hasAdd.size() < range) {
-			GraphNode& resultNode = *getNode((*ri).id);
-				bool occlude = false;
-				for (NGT::ObjectID t = 0; t < resultNode.size(); t++) {
-					if ((*ri).id == resultNode[t].id) {
-						occlude = true;
-						break;
-					}
-					float djk = comparator(*objectRepository.get((*ri).id), *objectRepository.get(resultNode[t].id));//准备计算ri和hasAdd【t】的距离
-					std::cerr << "sign first djk=" << djk << std::endl;
-					float cos_ij = (resultNode[t].distance + (*ri).distance - djk) / 2 / sqrt((*ri).distance * resultNode[t].distance);
-					std::cerr << "sign first cosij=" << cos_ij << std::endl;
-					if (cos_ij > threshold) {
-						occlude = true;
-						break;
-					}
-				}
-				if (!occlude) {
-					addEdgeDeletingExcessEdges((*ri).id, id, (*ri).distance);
-				}
-			//}
+	//	for (ObjectDistances::iterator ri = results.begin(); ri != results.end(); ri++) {
+	//		assert(id != (*ri).id);
+	//		//if (hasAdd.size() < range) {
+	//		GraphNode& resultNode = *getNode((*ri).id);
+	//			bool occlude = false;
+	//			for (NGT::ObjectID t = 0; t < resultNode.size(); t++) {
+	//				if ((*ri).id == resultNode[t].id) {
+	//					occlude = true;
+	//					break;
+	//				}
+	//				float djk = comparator(*objectRepository.get((*ri).id), *objectRepository.get(resultNode[t].id));//准备计算ri和hasAdd【t】的距离
+	//				std::cerr << "sign first djk=" << djk << std::endl;
+	//				float cos_ij = (resultNode[t].distance + (*ri).distance - djk) / 2 / sqrt((*ri).distance * resultNode[t].distance);
+	//				std::cerr << "sign first cosij=" << cos_ij << std::endl;
+	//				if (cos_ij > threshold) {
+	//					occlude = true;
+	//					break;
+	//				}
+	//			}
+	//			if (!occlude) {
+	//				addEdgeDeletingExcessEdges((*ri).id, id, (*ri).distance);
+	//			}
+	//		//}
 
-		}
+	//	}
 
-		
-	//:TODO加reverse neighbor
-		
-		
-	return;
-      }
+	//	
+	////:TODO加reverse neighbor
+	//	
+	//	
+	//return;
+ //     }
 
 	  void InterInsert() {//(原来为参数std::vector<std::mutex>& locks
 		  NGT::ObjectSpace::Comparator& comparator = objectSpace->getComparator();
