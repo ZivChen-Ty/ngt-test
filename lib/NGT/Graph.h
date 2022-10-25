@@ -675,8 +675,8 @@ namespace NGT {
 	NGT::ObjectSpace::Comparator& comparator = objectSpace->getComparator();
 	ObjectRepository& objectRepository = getObjectRepository();
 	//unsigned start = 0;
-	float threshold = 0.5; //ËùÑ¡½Ç¶ÈµÄcosÖµ£¬ÏÖÔÚÎª60¶È
-	//unsigned range = 100;//×î´ó³ö¶È£¨¿É±ä£©
+	float threshold = 0.5; //æ‰€é€‰è§’åº¦çš„coså€¼ï¼Œç°åœ¨ä¸º60åº¦
+	//unsigned range = 100;//æœ€å¤§å‡ºåº¦ï¼ˆå¯å˜ï¼‰
 	//std::vector<ObjectDistances> hasAdd;
 	ObjectRepository& fr = objectSpace->getRepository();
 	//unsigned nd = fr.size();
@@ -697,7 +697,7 @@ namespace NGT {
 					occlude = true;
 					break;
 			}
-				float djk = comparator(*objectRepository.get((*ri).id), *objectRepository.get((*t).id));//×¼±¸¼ÆËãriºÍhasAdd¡¾t¡¿µÄ¾àÀë
+				float djk = comparator(*objectRepository.get((*ri).id), *objectRepository.get((*t).id));//å‡†å¤‡è®¡ç®—riå’ŒhasAddã€tã€‘çš„è·ç¦»
 				//std::cerr << "sign first djk=" << djk << std::endl;
 				float cos_ij = ((*t).distance + (*ri).distance - djk) / 2 / sqrt((*ri).distance * (*t).distance);
 				//std::cerr << "sign first cosij=" << cos_ij << std::endl;
@@ -712,14 +712,14 @@ namespace NGT {
 			occlude = true;
 		}*/
 		if (!occlude) {
-			GraphNode& node =  *getNode((*ri).id);
-			addEdge(node, id, (*ri).distance, true);
-			//std::cerr << "addEdge finish addId=" << id << "fromId=" << (*ri).id << std::endl;
-			truncateQueue.push((*ri).id);
+			/*GraphNode& node =  *getNode((*ri).id);
+			addEdge(node, id, (*ri).distance, true);*/
+			std::cerr << "addEdge finish addId=" << id << "fromId=" << (*ri).id << std::endl;
+			
 			//std::cerr << "addIf"<< std::endl;
-			/*if (addEdge((*ri).id, id, (*ri).distance)) {
-				
-			}*/
+			if (addEdge((*ri).id, id, (*ri).distance)) {
+				truncateQueue.push((*ri).id);
+			}
 			
 			//addEdgeDeletingExcessEdges((*ri).id, id, (*ri).distance);
 		}
@@ -756,8 +756,8 @@ namespace NGT {
 	//NGT::ObjectSpace::Comparator& comparator = objectSpace->getComparator();
 	//ObjectRepository& objectRepository = getObjectRepository();
 	////unsigned start = 0;
-	//float threshold = 0.5; //ËùÑ¡½Ç¶ÈµÄcosÖµ£¬ÏÖÔÚÎª60¶È
-	////unsigned range = 60;//×î´ó³ö¶È£¨¿É±ä£©
+	//float threshold = 0.5; //æ‰€é€‰è§’åº¦çš„coså€¼ï¼Œç°åœ¨ä¸º60åº¦
+	////unsigned range = 60;//æœ€å¤§å‡ºåº¦ï¼ˆå¯å˜ï¼‰
 	////std::vector<ObjectDistances> hasAdd;
 	//ObjectRepository& fr = objectSpace->getRepository();
 	//unsigned nd = fr.size();
@@ -774,7 +774,7 @@ namespace NGT {
 	//					occlude = true;
 	//					break;
 	//				}
-	//				float djk = comparator(*objectRepository.get((*ri).id), *objectRepository.get(resultNode[t].id));//×¼±¸¼ÆËãriºÍhasAdd¡¾t¡¿µÄ¾àÀë
+	//				float djk = comparator(*objectRepository.get((*ri).id), *objectRepository.get(resultNode[t].id));//å‡†å¤‡è®¡ç®—riå’ŒhasAddã€tã€‘çš„è·ç¦»
 	//				std::cerr << "sign first djk=" << djk << std::endl;
 	//				float cos_ij = (resultNode[t].distance + (*ri).distance - djk) / 2 / sqrt((*ri).distance * resultNode[t].distance);
 	//				std::cerr << "sign first cosij=" << cos_ij << std::endl;
@@ -791,18 +791,18 @@ namespace NGT {
 	//	}
 
 	//	
-	////:TODO¼Óreverse neighbor
+	////:TODOåŠ reverse neighbor
 	//	
 	//	
 	//return;
  //     }
 
-	  void InterInsert() {//(Ô­À´Îª²ÎÊıstd::vector<std::mutex>& locks
+	  void InterInsert() {//(åŸæ¥ä¸ºå‚æ•°std::vector<std::mutex>& locks
 		  NGT::ObjectSpace::Comparator& comparator = objectSpace->getComparator();
 		  ObjectRepository& objectRepository = getObjectRepository();
 		  //unsigned start = 0;
-		  float threshold = 0.5; //ËùÑ¡½Ç¶ÈµÄcosÖµ£¬ÏÖÔÚÎª60¶È
-		 unsigned range = 100;//×î´ó³ö¶È£¨¿É±ä£©
+		  float threshold = 0.5; //æ‰€é€‰è§’åº¦çš„coså€¼ï¼Œç°åœ¨ä¸º60åº¦
+		 unsigned range = 100;//æœ€å¤§å‡ºåº¦ï¼ˆå¯å˜ï¼‰
 		  //std::vector<ObjectDistances> hasAdd;
 		  ObjectRepository& fr = objectSpace->getRepository();
 		  unsigned nd = fr.size();
@@ -829,7 +829,7 @@ namespace NGT {
 							  dup = 1;
 							  break;
 						  }
-						  float djk = comparator(*objectRepository.get((*j).id), *objectRepository.get(n));//×¼±¸¼ÆËãriºÍhasAdd¡¾t¡¿µÄ¾àÀë
+						  float djk = comparator(*objectRepository.get((*j).id), *objectRepository.get(n));//å‡†å¤‡è®¡ç®—riå’ŒhasAddã€tã€‘çš„è·ç¦»
 						  std::cerr << "second disjk=" << djk << std::endl;
 						  float cos_ij = ((*t).distance + (*j).distance - djk) / 2 / sqrt((*t).distance * (*j).distance);
 						  std::cerr << "second cosij=" << cos_ij << std::endl;
@@ -854,7 +854,7 @@ namespace NGT {
 							//	  occludeReverse = true;
 							//	  break;
 							//  }
-							//  float djk = comparator(*objectRepository.get(p.id), *objectRepository.get(hasAddReverse[t].id));//×¼±¸¼ÆËãriºÍhasAdd¡¾t¡¿µÄ¾àÀë
+							//  float djk = comparator(*objectRepository.get(p.id), *objectRepository.get(hasAddReverse[t].id));//å‡†å¤‡è®¡ç®—riå’ŒhasAddã€tã€‘çš„è·ç¦»
 							//  std::cerr << "second disjk=" << djk << std::endl;
 							//  float cos_ij = (hasAddReverse[t].distance + p.distance - djk) / 2 / sqrt(p.distance * hasAddReverse[t].distance);
 							//  std::cerr << "second cosij=" << cos_ij << std::endl;
@@ -1131,7 +1131,7 @@ namespace NGT {
       void addEdgeDeletingExcessEdges(ObjectID target, ObjectID addID, Distance addDistance, bool identityCheck = true) {
 	GraphNode &node = *getNode(target);
 	size_t kEdge = property.edgeSizeForCreation - 1;
-	//::TODO¼Ó·½ÏòÅĞ¶Ï
+	//::TODOåŠ æ–¹å‘åˆ¤æ–­
 
 #ifdef NGT_SHARED_MEMORY_ALLOCATOR
 	if (node.size() > kEdge && node.at(kEdge, repository.allocator).distance >= addDistance) {
@@ -1140,9 +1140,9 @@ namespace NGT {
 	  if ((linkedNode.size() > kEdge) && node.at(kEdge, repository.allocator).distance >= 
 	    linkedNode.at(kEdge, repository.allocator).distance) {
 #else
-	if (node.size() > kEdge && node[kEdge].distance >= addDistance) {//Ëü×îÔ¶ÁÚ¾ÓµÄ¾àÀëÈç¹û´óÓÚÒª¼ÓÈëµÄ¾àÀë
-	  GraphNode &linkedNode = *getNode(node[kEdge].id);//»ñÈ¡×îÔ¶ÁÚ¾Ó
-	  ObjectDistance linkedNodeEdge(target, node[kEdge].distance);//ÁÚ¾ÓÓëtargetµÄ±ß
+	if (node.size() > kEdge && node[kEdge].distance >= addDistance) {//å®ƒæœ€è¿œé‚»å±…çš„è·ç¦»å¦‚æœå¤§äºè¦åŠ å…¥çš„è·ç¦»
+	  GraphNode &linkedNode = *getNode(node[kEdge].id);//è·å–æœ€è¿œé‚»å±…
+	  ObjectDistance linkedNodeEdge(target, node[kEdge].distance);//é‚»å±…ä¸targetçš„è¾¹
 	  if ((linkedNode.size() > kEdge) && node[kEdge].distance >= linkedNode[kEdge].distance) {
 #endif
 	    try {
