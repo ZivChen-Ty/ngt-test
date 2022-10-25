@@ -78,7 +78,7 @@ public:
 	}
       }
 
-      globalProperty.edgeSizeForCreation = args.getl("E", 30);//
+      globalProperty.edgeSizeForCreation = args.getl("E", 10);//
       globalProperty.edgeSizeForSearch = args.getl("S", 40);
       {
 	char indexType = args.getChar("i", 't');

@@ -621,7 +621,7 @@ NGT::GraphIndex::GraphIndex(const string &database, bool rdOnly, bool graphDisab
 void
 GraphIndex::createIndex()
 {
-  
+    std::cerr << "createGraphIndex==============================" << std::endl;
       NGT::ObjectID id = 1;
       GraphRepository& anngRepo = repository;
       ObjectRepository& fr = objectSpace->getRepository();
@@ -641,7 +641,7 @@ GraphIndex::createIndex()
               pathAdjustCount += property.pathAdjustmentInterval;
           }
       }
-      InterInsert(locks);
+      //InterInsert(locks);
   
 }
 
@@ -736,8 +736,9 @@ insertMultipleSearchResults(GraphIndex &neighborhoodGraph,
 }
 
 void 
-GraphIndex::createIndex(size_t threadPoolSize, size_t sizeOfRepository) 
+GraphIndex::createIndex(size_t threadPoolSize, size_t sizeOfRepository) //xa
 {
+    std::cerr << "createGraphIndex==============================" << std::endl;
   if (NeighborhoodGraph::property.edgeSizeForCreation == 0) {
     return;
   }
@@ -1176,6 +1177,7 @@ NGT::GraphIndex::showStatisticsOfGraph(NGT::GraphIndex &outGraph, char mode, siz
 void 
 GraphAndTreeIndex::createIndex(size_t threadPoolSize, size_t sizeOfRepository) 
 {
+    std::cerr << "createGraphAndTreeIndex===========================" << std::endl;
   assert(threadPoolSize > 0);
 
   if (NeighborhoodGraph::property.edgeSizeForCreation == 0) {
@@ -1261,6 +1263,7 @@ GraphAndTreeIndex::createIndex(size_t threadPoolSize, size_t sizeOfRepository)
 	timerCount += timerInterval;
 	timer.start();
       }
+      InterInsert();
       buildTimeController.adjustEdgeSize(count);
       if (pathAdjustCount > 0 && pathAdjustCount <= count) {
 	GraphReconstructor::adjustPathsEffectively(static_cast<GraphIndex&>(*this));
@@ -1280,6 +1283,7 @@ GraphAndTreeIndex::createIndex(const vector<pair<NGT::Object*, size_t> > &object
 			       vector<InsertionResult> &ids, 
 			       float range, size_t threadPoolSize)
 {
+    std::cerr << "createGraphAndTreeIndex22222222222==============================" << std::endl;
   Timer		timer;
   size_t	timerInterval = 100000;
   size_t	timerCount = timerInterval;

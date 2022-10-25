@@ -883,9 +883,6 @@ namespace NGT {
 	std::cerr << std::endl;
       }
     }
-    virtual void InterInsert(std::vector<std::mutex>& locks) {
-        InterInsert(locks);
-    }
     virtual void insert(
 			ObjectID id
 			) {
@@ -1529,6 +1526,7 @@ namespace NGT {
     }
 
     void insert(ObjectID id) {
+        std::cerr << "insert.h:1532==================================1532 " << id << std::endl;
       ObjectRepository &fr = GraphIndex::objectSpace->getRepository();
       if (fr[id] == 0) {
 	std::cerr << "GraphAndTreeIndex::insert empty " << id << std::endl;

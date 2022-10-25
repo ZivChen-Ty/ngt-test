@@ -676,12 +676,12 @@ namespace NGT {
 	ObjectRepository& objectRepository = getObjectRepository();
 	//unsigned start = 0;
 	float threshold = 0.5; //所选角度的cos值，现在为60度
-	unsigned range = 100;//最大出度（可变）
+	//unsigned range = 100;//最大出度（可变）
 	//std::vector<ObjectDistances> hasAdd;
 	ObjectRepository& fr = objectSpace->getRepository();
-	unsigned nd = fr.size();
-	std::cerr << "sign nd=" << nd << std::endl;
-
+	//unsigned nd = fr.size();
+	//std::cerr << "sign nd=" << nd << std::endl;
+	std::queue<ObjectID> truncateQueue;
 
 	for (ObjectDistances::iterator ri = results.begin(); ri != results.end(); ri++) {
 		assert(id != (*ri).id);
@@ -696,25 +696,28 @@ namespace NGT {
 					std::cerr << "resultNodesize=" << count << std::endl;
 					occlude = true;
 					break;
-				}
+			}
 				float djk = comparator(*objectRepository.get((*ri).id), *objectRepository.get((*t).id));//准备计算ri和hasAdd【t】的距离
-				std::cerr << "sign first djk=" << djk << std::endl;
+				//std::cerr << "sign first djk=" << djk << std::endl;
 				float cos_ij = ((*t).distance + (*ri).distance - djk) / 2 / sqrt((*ri).distance * (*t).distance);
-				std::cerr << "sign first cosij=" << cos_ij << std::endl;
+				//std::cerr << "sign first cosij=" << cos_ij << std::endl;
 				if (cos_ij > threshold) {
 					occlude = true;
 					break;
 				}
 				count++;
-			}
+		}
 		//}
 		/*else {
 			occlude = true;
 		}*/
 		if (!occlude) {
 			std::cerr << "addEdge now" << std::endl;
-			GraphNode& node =  *getNode((*ri).id);
-			addEdge(node, id, (*ri).distance, true);
+			//GraphNode& node =  *getNode((*ri).id);
+			//addEdge(node, id, (*ri).distance, true);
+			if (addEdge((*ri).id, id, (*ri).distance)) {
+				truncateQueue.push((*ri).id);
+			}
 			std::cerr << "addEdge finish addId=" << id << "fromId=" << (*ri).id<< std::endl;
 			//addEdgeDeletingExcessEdges((*ri).id, id, (*ri).distance);
 		}
@@ -722,19 +725,17 @@ namespace NGT {
 
 	}
 
-
-	/*std::queue<ObjectID> truncateQueue;
-	for (ObjectDistances::iterator ri = results.begin(); ri != results.end(); ri++) {
+	/*for (ObjectDistances::iterator ri = results.begin(); ri != results.end(); ri++) {
 	  assert(id != (*ri).id);
 	  if (addEdge((*ri).id, id, (*ri).distance)) {
-	    truncateQueue.push((*ri).id);
+		  truncateQueue.push((*ri).id);
 	  }
-	}
+	}*/
 	while (!truncateQueue.empty()) {
 	  ObjectID tid = truncateQueue.front();
 	  truncateEdges(tid);
 	  truncateQueue.pop();
-	}*/
+	}
 	return;
       }
 
@@ -785,7 +786,7 @@ namespace NGT {
 	return;
       }
 
-	  void InterInsert(std::vector<std::mutex>& locks) {
+	  void InterInsert() {//(原来为参数std::vector<std::mutex>& locks
 		  NGT::ObjectSpace::Comparator& comparator = objectSpace->getComparator();
 		  ObjectRepository& objectRepository = getObjectRepository();
 		  //unsigned start = 0;
@@ -799,52 +800,62 @@ namespace NGT {
 			  std::cerr << "reverse times " << n << std::endl;
 			  GraphNode& node = *getNode(n);
 			  //size_t kEdge = property.edgeSizeForCreation - 1;
-			  for (NGT::ObjectID i = 0; i < node.size(); i++) {
-				  if (node[i].distance < 0)
+			  for (ObjectDistances::iterator t = node.begin(); t != node.end(); t++) {
+			  //for (NGT::ObjectID i = 0; i < node.size(); i++) {
+				  if ((*t).distance < 0)
 					  break;
-				  NGT::ObjectID des = node[i].id;
+				  NGT::ObjectID des = (*t).id;
 				  GraphNode& nodeDes = *getNode(des);
-				  std::vector<ObjectDistance> temp_pool;
 				  int dup = 0;
 				  {
 					  std::cerr << "first reverse start " << std::endl;
-					  LockGuard guard(locks[des]);
-					  for (NGT::ObjectID j = 1; j < nodeDes.size(); j++) {
-						  if (nodeDes[j].distance < 0)
+					  //LockGuard guard(locks[des]);
+					  for (ObjectDistances::iterator j = nodeDes.begin(); j != nodeDes.end(); j++) {
+					  //for (NGT::ObjectID j = 1; j < nodeDes.size(); j++) {
+						  if ((*j).distance < 0)
 							  break;
-						  if (n == nodeDes[j].id) {
+						  if (n == (*j).id) {
 							  dup = 1;
 							  break;
 						  }
-						  temp_pool.push_back(nodeDes[j]);
-					  }
-					  if (dup)
-						  continue;
-					  temp_pool.push_back(node[0]);
-					  std::vector<ObjectDistance> hasAddReverse;
-					  unsigned startReverse = 0;
-					  hasAddReverse.push_back(temp_pool[startReverse]);
-					  while ( (++startReverse) < temp_pool.size()) {
-						  bool occludeReverse = false;
-						  ObjectDistance& p = temp_pool[startReverse];
-						  for (NGT::ObjectID t = 0; t < hasAddReverse.size(); t++) {
-							  if (p.id == hasAddReverse[t].id) {
-								  occludeReverse = true;
-								  break;
-							  }
-							  float djk = comparator(*objectRepository.get(p.id), *objectRepository.get(hasAddReverse[t].id));//准备计算ri和hasAdd【t】的距离
-							  std::cerr << "second disjk=" << djk << std::endl;
-							  float cos_ij = (hasAddReverse[t].distance + p.distance - djk) / 2 / sqrt(p.distance * hasAddReverse[t].distance);
-							  std::cerr << "second cosij=" << cos_ij << std::endl;
-							  if (cos_ij > threshold) {
-								  occludeReverse = true;
-								  break;
-							  }
-						  }
-						  if (!occludeReverse) {
-							  addEdgeDeletingExcessEdges(p.id, des, p.distance);
+						  float djk = comparator(*objectRepository.get((*j).id), *objectRepository.get(n));//准备计算ri和hasAdd【t】的距离
+						  std::cerr << "second disjk=" << djk << std::endl;
+						  float cos_ij = ((*t).distance + (*j).distance - djk) / 2 / sqrt((*t).distance * (*j).distance);
+						  std::cerr << "second cosij=" << cos_ij << std::endl;
+						  if (cos_ij > threshold) {
+							  dup = 1;
+							  break;
 						  }
 					  }
+					  if (dup == 0) {
+						  addEdgeDeletingExcessEdges(des, n, (*t).distance);
+					  }
+						  
+					  //temp_pool.push_back(node.begin());
+					  //std::vector<ObjectDistance> hasAddReverse;
+					  //unsigned startReverse = 0;
+					  //hasAddReverse.push_back(temp_pool[startReverse]);
+					  //while ( (++startReverse) < temp_pool.size()) {
+						 // bool occludeReverse = false;
+						 // ObjectDistance& p = temp_pool[startReverse];
+						 // for (NGT::ObjectID t = 0; t < hasAddReverse.size(); t++) {
+							//  if (p.id == hasAddReverse[t].id) {
+							//	  occludeReverse = true;
+							//	  break;
+							//  }
+							//  float djk = comparator(*objectRepository.get(p.id), *objectRepository.get(hasAddReverse[t].id));//准备计算ri和hasAdd【t】的距离
+							//  std::cerr << "second disjk=" << djk << std::endl;
+							//  float cos_ij = (hasAddReverse[t].distance + p.distance - djk) / 2 / sqrt(p.distance * hasAddReverse[t].distance);
+							//  std::cerr << "second cosij=" << cos_ij << std::endl;
+							//  if (cos_ij > threshold) {
+							//	  occludeReverse = true;
+							//	  break;
+							//  }
+						 // }
+						 // if (!occludeReverse) {
+							//  addEdgeDeletingExcessEdges(p.id, des, p.distance);
+						 // }
+					  //}
 
 				  }
 
