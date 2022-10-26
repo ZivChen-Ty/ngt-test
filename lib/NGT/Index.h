@@ -902,6 +902,7 @@ namespace NGT {
       } else {
 	searchForKNNGInsertion(po, id, rs);
       }
+      std::cerr << "==================================================index.h:905" << std::endl;
       insertNode(id, rs);
 #ifdef NGT_SHARED_MEMORY_ALLOCATOR
       objectSpace->deleteObject(&po);
@@ -1526,7 +1527,7 @@ namespace NGT {
     }
 
     void insert(ObjectID id) {
-        std::cerr << "insert.h:1532==================================1532 " << id << std::endl;
+        
       ObjectRepository &fr = GraphIndex::objectSpace->getRepository();
       if (fr[id] == 0) {
 	std::cerr << "GraphAndTreeIndex::insert empty " << id << std::endl;
@@ -1543,7 +1544,7 @@ namespace NGT {
       } else {
 	searchForKNNGInsertion(po, id, rs);
       }
-
+      std::cerr << "insert.h:1532==================================1532 " << id << std::endl;
       GraphIndex::insertNode(id, rs);
 
       if (((rs.size() > 0) && (rs[0].distance != 0.0)) || rs.size() == 0) {
