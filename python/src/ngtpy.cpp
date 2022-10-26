@@ -53,7 +53,7 @@ public:
    const std::string path,
    size_t dimension,
    int edgeSizeForCreation = 100,
-   int edgeSizeForSearch = 40,
+   int edgeSizeForSearch = 100,
    const std::string distanceType = "L2",
    const std::string objectType = "Float"
   ) {

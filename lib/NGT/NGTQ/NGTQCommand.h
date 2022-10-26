@@ -79,7 +79,7 @@ public:
       }
 
       globalProperty.edgeSizeForCreation = args.getl("E", 100);//
-      globalProperty.edgeSizeForSearch = args.getl("S", 40);
+      globalProperty.edgeSizeForSearch = args.getl("S", 100);
       {
 	char indexType = args.getChar("i", 't');
 	globalProperty.indexType = indexType == 't' ? NGT::Property::GraphAndTree : NGT::Property::Graph;

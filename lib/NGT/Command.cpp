@@ -37,7 +37,7 @@ using namespace std;
     } catch (...) {}
 
     property.edgeSizeForCreation = args.getl("E", 100);
-    property.edgeSizeForSearch = args.getl("S", 40);
+    property.edgeSizeForSearch = args.getl("S", 100);
     property.batchSizeForCreation = args.getl("b", 200);
     property.insertionRadiusCoefficient = args.getf("e", 0.1) + 1.0;
     property.truncationThreshold = args.getl("t", 0);
