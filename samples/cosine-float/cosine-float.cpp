@@ -74,7 +74,7 @@ main(int argc, char **argv)
       NGT::SearchQuery		sc(query);
       NGT::ObjectDistances	objects;
       sc.setResults(&objects);
-      sc.setSize(50);
+      sc.setSize(10);
       sc.setEpsilon(0.1);
 
       index.search(sc);
