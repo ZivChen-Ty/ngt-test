@@ -197,7 +197,7 @@ class Index(object):
 
     @staticmethod
     def create(path, dimension,
-               edge_size_for_creation=10, edge_size_for_search=40,
+               edge_size_for_creation=50, edge_size_for_search=40,
                object_type="Float", distance_type="L2"):
         '''
         create an empty index with the specified parameters.
@@ -329,7 +329,7 @@ class Index(object):
                                                ]
         self.__ngt.ngt_insert_index.restype = c_uint
 
-    def search(self, query, k=20, epsilon=0.1):
+    def search(self, query, k=50, epsilon=0.1):
         '''
         search for the k nearest neighbors of the specifiecd query object.
 

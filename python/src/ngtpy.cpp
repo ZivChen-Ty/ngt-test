@@ -42,7 +42,7 @@ public:
       NGT::Index::enableLog();
     }
     treeIndex = !treeDisabled;
-    defaultNumOfSearchObjects = 100;
+    defaultNumOfSearchObjects = 50;
     defaultEpsilon = 0.1;
     defaultRadius = FLT_MAX;
     defaultEdgeSize = -1;	// -1: use edge_size_for_search in the profile
@@ -52,8 +52,8 @@ public:
   static void create(
    const std::string path,
    size_t dimension,
-   int edgeSizeForCreation = 100,
-   int edgeSizeForSearch = 100,
+   int edgeSizeForCreation = 50,
+   int edgeSizeForSearch = 40,
    const std::string distanceType = "L2",
    const std::string objectType = "Float"
   ) {

@@ -76,7 +76,7 @@ main(int argc, char **argv)
       NGT::ObjectDistances	objects;
       sc.setResults(&objects);
       sc.setRadius(250.0);
-      sc.setSize(100);
+      sc.setSize(50);
       sc.setEpsilon(0.6);
 
       index.search(sc);
