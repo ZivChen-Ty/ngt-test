@@ -682,14 +682,14 @@ namespace NGT {
 	//unsigned nd = fr.size();
 	//std::cerr << "sign nd=" << nd << std::endl;
 	std::queue<ObjectID> truncateQueue;
-
+int count = 0;
 	for (ObjectDistances::iterator ri = results.begin(); ri != results.end(); ri++) {
 		assert(id != (*ri).id);
 		//if (hasAdd.size() < range) {
 		GraphNode& resultNode = *getNode((*ri).id);
 		bool occlude = false;
 		
-		int count = 0;
+		
 		//if (resultNode.size() < range) {
 			for (ObjectDistances::iterator t = resultNode.begin(); t != resultNode.end(); t++) {
 				if ((*ri).id == (*t).id) {
@@ -705,7 +705,7 @@ namespace NGT {
 					occlude = true;
 					break;
 				}
-				count++;
+				
 		}
 		//}
 		/*else {
@@ -714,7 +714,7 @@ namespace NGT {
 		if (!occlude) {
 			GraphNode& node =  *getNode((*ri).id);
 			addEdge(node, id, (*ri).distance, true);
-			//std::cerr << "addEdge finish addId=" << id << "fromId=" << (*ri).id << std::endl;
+			
 			
 			//std::cerr << "addIf"<< std::endl;
 			/*if (addEdge((*ri).id, id, (*ri).distance)) {
@@ -724,9 +724,9 @@ namespace NGT {
 			//addEdgeDeletingExcessEdges((*ri).id, id, (*ri).distance);
 		}
 		//}
-
+		count++;
 	}
-
+	std::cerr << "addId=" << id  << "count=" << count << std::endl;
 	/*for (ObjectDistances::iterator ri = results.begin(); ri != results.end(); ri++) {
 	  assert(id != (*ri).id);
 	  if (addEdge((*ri).id, id, (*ri).distance)) {
