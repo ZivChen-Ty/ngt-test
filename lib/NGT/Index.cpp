@@ -1408,6 +1408,7 @@ GraphAndTreeIndex::createIndex(const vector<pair<NGT::Object*, size_t> > &object
 	    if (((*job.results).size() == 0) && (job.id != 1)) {
 	      cerr  << "insert warning!! No searched nodes!. If the first time, no problem. " << job.id << endl;
 	    }
+        std::cerr << "1411-===================================insert jobid= " << job.id << std::endl;
 	    GraphIndex::insertNode(job.id, *job.results);
 	  } 
 	  if (job.results != 0) {
