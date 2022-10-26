@@ -714,7 +714,7 @@ namespace NGT {
 		if (!occlude) {
 			GraphNode& node =  *getNode((*ri).id);
 			addEdge(node, id, (*ri).distance, true);
-			std::cerr << "addEdge finish addId=" << id << "fromId=" << (*ri).id << std::endl;
+			//std::cerr << "addEdge finish addId=" << id << "fromId=" << (*ri).id << std::endl;
 			
 			//std::cerr << "addIf"<< std::endl;
 			/*if (addEdge((*ri).id, id, (*ri).distance)) {
