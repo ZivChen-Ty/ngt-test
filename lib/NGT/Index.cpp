@@ -635,7 +635,7 @@ GraphIndex::createIndex()
           if (id < anngRepo.size() && anngRepo[id] != 0) {
               continue;
           }
-          insert(id);//id是要插入的节点id
+          insert(id);//id脢脟脪陋虏氓脠毛碌脛陆脷碌茫id
           buildTimeController.adjustEdgeSize(++count);
           if (pathAdjustCount > 0 && pathAdjustCount <= id) {
               GraphReconstructor::adjustPathsEffectively(static_cast<GraphIndex&>(*this));
@@ -691,7 +691,7 @@ insertMultipleSearchResults(GraphIndex &neighborhoodGraph,
 			    size_t dataSize)
 {
   // compute distances among all of the resultant objects
-  if (neighborhoodGraph.NeighborhoodGraph::property.graphType == NeighborhoodGraph::GraphTypeANNG ||
+  if (
       neighborhoodGraph.NeighborhoodGraph::property.graphType == NeighborhoodGraph::GraphTypeIANNG ||
       neighborhoodGraph.NeighborhoodGraph::property.graphType == NeighborhoodGraph::GraphTypeONNG ||
       neighborhoodGraph.NeighborhoodGraph::property.graphType == NeighborhoodGraph::GraphTypeDNNG) {
