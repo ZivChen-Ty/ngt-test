@@ -52,7 +52,7 @@
 #endif
 
 #ifndef NGT_CREATION_EDGE_SIZE
-#define NGT_CREATION_EDGE_SIZE			10
+#define NGT_CREATION_EDGE_SIZE			50
 #endif
 
 namespace NGT {
@@ -726,7 +726,7 @@ int count = 0;
 		//}
 		count++;
 	}
-	//std::cerr << "addId=" << id  << "count=" << count << std::endl;
+	std::cerr << "addId=" << id  << "count=" << count << std::endl;
 	/*for (ObjectDistances::iterator ri = results.begin(); ri != results.end(); ri++) {
 	  assert(id != (*ri).id);
 	  if (addEdge((*ri).id, id, (*ri).distance)) {
