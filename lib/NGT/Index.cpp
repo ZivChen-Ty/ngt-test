@@ -715,9 +715,9 @@ insertMultipleSearchResults(GraphIndex &neighborhoodGraph,
       }
       // sort and cut excess edges	    
       std::sort(objs.begin(), objs.end());
-     // if (objs.size() > size) {
-	//objs.resize(size);
-     // }
+     if (objs.size() > size) {
+	objs.resize(size);
+      }
     } // for (size_t idxi ....
   } // if (neighborhoodGraph.graphType == NeighborhoodGraph::GraphTypeUDNNG)
   // insert resultant objects into the graph as edges
@@ -734,7 +734,7 @@ insertMultipleSearchResults(GraphIndex &neighborhoodGraph,
       cerr << "  The pruned parameter (edgeSizeForSearch [-S])=" << neighborhoodGraph.NeighborhoodGraph::property.edgeSizeForSearch << endl;
     }
     //std::cerr << "======================================================================================before insert where index.cpp:734 id=" << gr.id << std::endl;
-    neighborhoodGraph.insertNode(gr.id, *gr.results);
+    neighborhoodGraph.insertNode(gr.id, *gr.results
   }
 }
 
