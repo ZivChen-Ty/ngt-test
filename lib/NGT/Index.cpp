@@ -691,35 +691,35 @@ insertMultipleSearchResults(GraphIndex &neighborhoodGraph,
 			    size_t dataSize)
 {
   // compute distances among all of the resultant objects
-  if (
-      neighborhoodGraph.NeighborhoodGraph::property.graphType == NeighborhoodGraph::GraphTypeIANNG ||
-      neighborhoodGraph.NeighborhoodGraph::property.graphType == NeighborhoodGraph::GraphTypeONNG ||
-      neighborhoodGraph.NeighborhoodGraph::property.graphType == NeighborhoodGraph::GraphTypeDNNG) {
-    // This processing occupies about 30% of total indexing time when batch size is 200.
-    // Only initial batch objects should be connected for each other.
-    // The number of nodes in the graph is checked to know whether the batch is initial.
-    //size_t size = NeighborhoodGraph::property.edgeSizeForCreation;
-    size_t size = neighborhoodGraph.NeighborhoodGraph::property.edgeSizeForCreation;
-    // add distances from a current object to subsequence objects to imitate of sequential insertion.
+//   if (
+//       neighborhoodGraph.NeighborhoodGraph::property.graphType == NeighborhoodGraph::GraphTypeIANNG ||
+//       neighborhoodGraph.NeighborhoodGraph::property.graphType == NeighborhoodGraph::GraphTypeONNG ||
+//       neighborhoodGraph.NeighborhoodGraph::property.graphType == NeighborhoodGraph::GraphTypeDNNG) {
+//     // This processing occupies about 30% of total indexing time when batch size is 200.
+//     // Only initial batch objects should be connected for each other.
+//     // The number of nodes in the graph is checked to know whether the batch is initial.
+//     //size_t size = NeighborhoodGraph::property.edgeSizeForCreation;
+//     size_t size = neighborhoodGraph.NeighborhoodGraph::property.edgeSizeForCreation;
+//     // add distances from a current object to subsequence objects to imitate of sequential insertion.
 
-    sort(output.begin(), output.end());	// sort by batchIdx
+//     sort(output.begin(), output.end());	// sort by batchIdx
 
-    for (size_t idxi = 0; idxi < dataSize; idxi++) {
-      // add distances
-      ObjectDistances &objs = *output[idxi].results;
-      for (size_t idxj = 0; idxj < idxi; idxj++) {
-	ObjectDistance	r;
-	r.distance = neighborhoodGraph.objectSpace->getComparator()(*output[idxi].object, *output[idxj].object);
-	r.id = output[idxj].id;
-	objs.push_back(r);
-      }
-      // sort and cut excess edges	    
-      std::sort(objs.begin(), objs.end());
-     if (objs.size() > size) {
-	objs.resize(size);
-      }
-    } // for (size_t idxi ....
-  } // if (neighborhoodGraph.graphType == NeighborhoodGraph::GraphTypeUDNNG)
+//     for (size_t idxi = 0; idxi < dataSize; idxi++) {
+//       // add distances
+//       ObjectDistances &objs = *output[idxi].results;
+//       for (size_t idxj = 0; idxj < idxi; idxj++) {
+// 	ObjectDistance	r;
+// 	r.distance = neighborhoodGraph.objectSpace->getComparator()(*output[idxi].object, *output[idxj].object);
+// 	r.id = output[idxj].id;
+// 	objs.push_back(r);
+//       }
+//       // sort and cut excess edges	    
+//       std::sort(objs.begin(), objs.end());
+//      if (objs.size() > size) {
+// 	objs.resize(size);
+//       }
+//     } // for (size_t idxi ....
+//   } // if (neighborhoodGraph.graphType == NeighborhoodGraph::GraphTypeUDNNG)
   // insert resultant objects into the graph as edges
   //std::cerr << "================================================================================ index.cpp:734 dataSize=" <<dataSize << std::endl;
   for (size_t i = 0; i < dataSize; i++) {
