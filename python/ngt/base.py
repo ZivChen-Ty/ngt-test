@@ -329,7 +329,7 @@ class Index(object):
                                                ]
         self.__ngt.ngt_insert_index.restype = c_uint
 
-    def search(self, query, k=50, epsilon=0.1):
+    def search(self, query, k=20, epsilon=0.1):
         '''
         search for the k nearest neighbors of the specifiecd query object.
 

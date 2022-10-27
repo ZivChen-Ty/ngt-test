@@ -420,7 +420,7 @@ CreateIndexThread::run() {
       if (graphIndex.NeighborhoodGraph::property.graphType == NeighborhoodGraph::GraphTypeKNNG) {
 	graphIndex.searchForKNNGInsertion(obj, job.id, *rs);	// linear search
       } else {
-          std::cerr << "===========================================================================begin search index.cpp:423 obj=" << std::endl;
+          //std::cerr << "===========================================================================begin search index.cpp:423 obj=" << std::endl;
 	graphIndex.searchForNNGInsertion(obj, *rs);
       }
     } catch(NGT::Exception &err) {
@@ -715,13 +715,13 @@ insertMultipleSearchResults(GraphIndex &neighborhoodGraph,
       }
       // sort and cut excess edges	    
       std::sort(objs.begin(), objs.end());
-      /*if (objs.size() > size) {
+      if (objs.size() > size) {
 	objs.resize(size);
-      }*/
+      }
     } // for (size_t idxi ....
   } // if (neighborhoodGraph.graphType == NeighborhoodGraph::GraphTypeUDNNG)
   // insert resultant objects into the graph as edges
-  std::cerr << "================================================================================ index.cpp:734 dataSize=" <<dataSize << std::endl;
+  //std::cerr << "================================================================================ index.cpp:734 dataSize=" <<dataSize << std::endl;
   for (size_t i = 0; i < dataSize; i++) {
     CreateIndexJob &gr = output[i];
     if ((*gr.results).size() == 0) {
@@ -733,7 +733,7 @@ insertMultipleSearchResults(GraphIndex &neighborhoodGraph,
       cerr << "  The number of edges for the node=" << gr.results->size() << endl;
       cerr << "  The pruned parameter (edgeSizeForSearch [-S])=" << neighborhoodGraph.NeighborhoodGraph::property.edgeSizeForSearch << endl;
     }
-    std::cerr << "======================================================================================before insert where index.cpp:734 id=" << gr.id << std::endl;
+    //std::cerr << "======================================================================================before insert where index.cpp:734 id=" << gr.id << std::endl;
     neighborhoodGraph.insertNode(gr.id, *gr.results);
   }
 }
