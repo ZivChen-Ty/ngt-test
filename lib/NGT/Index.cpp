@@ -734,7 +734,7 @@ insertMultipleSearchResults(GraphIndex &neighborhoodGraph,
       cerr << "  The pruned parameter (edgeSizeForSearch [-S])=" << neighborhoodGraph.NeighborhoodGraph::property.edgeSizeForSearch << endl;
     }
     //std::cerr << "======================================================================================before insert where index.cpp:734 id=" << gr.id << std::endl;
-    neighborhoodGraph.insertNode(gr.id, *gr.results
+    neighborhoodGraph.insertNode(gr.id, *gr.results);
   }
 }
 
