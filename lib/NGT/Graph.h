@@ -52,7 +52,7 @@
 #endif
 
 #ifndef NGT_CREATION_EDGE_SIZE
-#define NGT_CREATION_EDGE_SIZE			100
+#define NGT_CREATION_EDGE_SIZE			75
 #endif
 
 namespace NGT {
