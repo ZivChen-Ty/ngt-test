@@ -197,7 +197,7 @@ class Index(object):
 
     @staticmethod
     def create(path, dimension,
-               edge_size_for_creation=50, edge_size_for_search=40,
+               edge_size_for_creation=10, edge_size_for_search=40,
                object_type="Float", distance_type="L2"):
         '''
         create an empty index with the specified parameters.
