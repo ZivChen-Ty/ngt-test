@@ -454,7 +454,7 @@ namespace NGT {
 	  seedSize			= NGT_SEED_SIZE;
 	  seedType			= SeedTypeNone;
 	  truncationThreadPoolSize	= 8;
-	  batchSizeForCreation		= 300;
+	  batchSizeForCreation		= 200;
 	  graphType			= GraphTypeANNG;
 	  dynamicEdgeSizeBase		= 30;
 	  dynamicEdgeSizeRate		= 20;
