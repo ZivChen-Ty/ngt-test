@@ -36,7 +36,7 @@ using namespace std;
       objectPath = args.get("#2");
     } catch (...) {}
 
-    property.edgeSizeForCreation = args.getl("E", 50);
+    property.edgeSizeForCreation = args.getl("E", 10);
     property.edgeSizeForSearch = args.getl("S", 40);
     property.batchSizeForCreation = args.getl("b", 200);
     property.insertionRadiusCoefficient = args.getf("e", 0.1) + 1.0;
