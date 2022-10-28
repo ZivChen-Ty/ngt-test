@@ -3,8 +3,11 @@
     "",
     "\\lib",
     "\\lib\\NGT",
-    "\\lib\\NGT\\NGTQ"
+    "\\lib\\NGT\\NGTQ",
+    "\\python",
+    "\\python\\ngt",
+    "\\python\\src"
   ],
-  "SelectedNode": "\\lib\\NGT\\ObjectRepository.h",
+  "SelectedNode": "\\lib\\NGT\\NGTQ\\NGTQGCommand.cpp",
   "PreviewInSolutionExplorer": false
 }

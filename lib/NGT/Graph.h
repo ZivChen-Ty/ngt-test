@@ -675,7 +675,7 @@ namespace NGT {
 	NGT::ObjectSpace::Comparator& comparator = objectSpace->getComparator();
 	ObjectRepository& objectRepository = getObjectRepository();
 	//unsigned start = 0;
-	float threshold = 0.3; //所选角度的cos值，现在为60度
+	float threshold = 0.7; //所选角度的cos值，现在为60度
 	//unsigned range = 100;//最大出度（可变）
 	//std::vector<ObjectDistances> hasAdd;
 	ObjectRepository& fr = objectSpace->getRepository();
