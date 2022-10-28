@@ -32,7 +32,7 @@ namespace NGT {
 	targetAccuracy = 0.9;	// when epsilon is 0.0 and all of the edges are used
 	targetNoOfObjects = 0;
 	noOfSampleObjects = 100000;
-	maxNoOfEdges = 50;
+	maxNoOfEdges = 100;
       }
       size_t noOfQueries;
       size_t noOfResults;
