@@ -701,6 +701,7 @@ int count = 0;
 				//std::cerr << "sign first djk=" << djk << std::endl;
 				float cos_ij = ((*t).distance + (*ri).distance - djk) / 2 / sqrt((*ri).distance * (*t).distance);
 				//std::cerr << "sign first cosij=" << cos_ij << std::endl;
+				std::cerr << "addId=" << id << "  tdistance=" << (*t).distance  << "  rdistance=" << (*r).distance << "  djk=" << djk << "  cosij=" << cos_ij << std::endl;
 				if (cos_ij > threshold) {
 					occlude = true;
 					break;
