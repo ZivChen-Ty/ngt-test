@@ -675,7 +675,7 @@ namespace NGT {
 	NGT::ObjectSpace::Comparator& comparator = objectSpace->getComparator();
 	ObjectRepository& objectRepository = getObjectRepository();
 	//unsigned start = 0;
-	float threshold = 0.87; //所选角度的cos值，现在为60度
+	float threshold = 0.86; //所选角度的cos值，现在为60度
 	//unsigned range = 100;//最大出度（可变）
 	//std::vector<ObjectDistances> hasAdd;
 	ObjectRepository& fr = objectSpace->getRepository();
@@ -701,7 +701,7 @@ int count = 0;
 				//std::cerr << "sign first djk=" << djk << std::endl;
 				float cos_ij = ((*t).distance + (*ri).distance - djk) / 2 / sqrt((*ri).distance * (*t).distance);
 				//std::cerr << "sign first cosij=" << cos_ij << std::endl;
-				std::cerr << "addId=" << id << "  tdistance=" << (*t).distance  << "  rdistance=" << (*ri).distance << "  djk=" << djk << "  cosij=" << cos_ij <<" count=" << count<< std::endl;
+				//std::cerr << "addId=" << id << "  tdistance=" << (*t).distance  << "  rdistance=" << (*ri).distance << "  djk=" << djk << "  cosij=" << cos_ij <<" count=" << count<< std::endl;
 				if (cos_ij > threshold) {
 					occlude = true;
 					break;
@@ -716,7 +716,7 @@ int count = 0;
 			GraphNode& node =  *getNode((*ri).id);
 			addEdge(node, id, (*ri).distance, true);
 			
-			count++;
+			//count++;
 			//std::cerr << "addIf"<< std::endl;
 			/*if (addEdge((*ri).id, id, (*ri).distance)) {
 				truncateQueue.push((*ri).id);
@@ -725,9 +725,9 @@ int count = 0;
 			//addEdgeDeletingExcessEdges((*ri).id, id, (*ri).distance);
 		}
 		//}
-		
+		count++;
 	}
-	//std::cerr << "addId=" << id  << "count=" << count << std::endl;
+	std::cerr << "addId=" << id  << "count=" << count << std::endl;
 	/*for (ObjectDistances::iterator ri = results.begin(); ri != results.end(); ri++) {
 	  assert(id != (*ri).id);
 	  if (addEdge((*ri).id, id, (*ri).distance)) {
