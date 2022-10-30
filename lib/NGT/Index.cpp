@@ -712,23 +712,25 @@ insertMultipleSearchResults(GraphIndex &neighborhoodGraph,
 	ObjectDistance	r;
 	r.distance = neighborhoodGraph.objectSpace->getComparator()(*output[idxi].object, *output[idxj].object);
 	r.id = output[idxj].id;
-    bool occlude = false;
-    float threshold = 0.86;
-    for (ObjectDistances::iterator t = objs.begin(); t != objs.end(); t++) {
-        if (r.id == (*t).id) {
-            occlude = true;
-            break;
-        }
-        float djk = comparator(*objectRepository.get(r.id), *objectRepository.get((*t).id));//准备计算ri和hasAdd【t】的距离
-        float cos_ij = ((*t).distance + r.distance - djk) / 2 / sqrt(r.distance * (*t).distance);
-        if (cos_ij > threshold) {
-            occlude = true;
-            break;
-        }
+    objs.push_back(r);
+    //bool occlude = false;
+    //float threshold = 0.86;
+    //for (ObjectDistances::iterator t = objs.begin(); t != objs.end(); t++) {
+    //    if (r.id == (*t).id) {
+    //        occlude = true;
+    //        break;
+    //    }
+    //    float djk = comparator(*objectRepository.get(r.id), *objectRepository.get((*t).id));//准备计算ri和hasAdd【t】的距离
+    //    float cos_ij = ((*t).distance + r.distance - djk) / 2 / sqrt(r.distance * (*t).distance);
+    //    if (cos_ij > threshold) {
+    //        occlude = true;
+    //        break;
+    //    }
 
-    }
-    if(!occlude)
-	    objs.push_back(r);
+    //}
+    //if(!occlude)
+	   // objs.push_back(r);
+    
       }
       // sort and cut excess edges	    
       std::sort(objs.begin(), objs.end());
@@ -1214,7 +1216,8 @@ GraphAndTreeIndex::createIndex(size_t threadPoolSize, size_t sizeOfRepository)
   CreateIndexThreadPool threads(threadPoolSize);
 
   CreateIndexSharedData sd(*this);
-
+  int16_t temp = NeighborhoodGraph::property.edgeSizeForCreation
+  NeighborhoodGraph::property.edgeSizeForCreation = 150;
   threads.setSharedData(&sd);
   threads.create();
   CreateIndexThreadPool::OutputJobQueue &output = threads.getOutputJobQueue();
@@ -1231,7 +1234,7 @@ GraphAndTreeIndex::createIndex(size_t threadPoolSize, size_t sizeOfRepository)
 	break;
       }
       threads.waitForFinish();
-
+      NeighborhoodGraph::property.edgeSizeForCreation = temp;
       if (output.size() != cnt) {
 	cerr << "NNTGIndex::insertGraphIndexByThread: Warning!! Thread response size is wrong." << endl;
 	cnt = output.size();
