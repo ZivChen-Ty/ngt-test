@@ -1506,8 +1506,8 @@ namespace NGT {
     void searchForNNGInsertion(Object &po, ObjectDistances &result) {
       NGT::SearchContainer sc(po);
       sc.setResults(&result);
-      //sc.size = NeighborhoodGraph::property.edgeSizeForCreation;
-      sc.size = 200;
+      sc.size = NeighborhoodGraph::property.edgeSizeForCreation;
+      std::cerr << "sc.size=" << sc.size  << "==============================================="<< std::endl;
       sc.radius = FLT_MAX;
       sc.explorationCoefficient = NeighborhoodGraph::property.insertionRadiusCoefficient;
       sc.useAllNodesInLeaf = true;
