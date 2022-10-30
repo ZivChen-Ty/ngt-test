@@ -1216,7 +1216,7 @@ GraphAndTreeIndex::createIndex(size_t threadPoolSize, size_t sizeOfRepository)
   CreateIndexThreadPool threads(threadPoolSize);
 
   CreateIndexSharedData sd(*this);
-  int16_t temp = NeighborhoodGraph::property.edgeSizeForCreation
+  int16_t temp = NeighborhoodGraph::property.edgeSizeForCreation;
   NeighborhoodGraph::property.edgeSizeForCreation = 150;
   threads.setSharedData(&sd);
   threads.create();
