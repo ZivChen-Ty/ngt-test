@@ -1507,7 +1507,7 @@ namespace NGT {
       NGT::SearchContainer sc(po);
       sc.setResults(&result);
       //sc.size = NeighborhoodGraph::property.edgeSizeForCreation;
-      sc.size = 80;
+      sc.size = 120;
       sc.radius = FLT_MAX;
       sc.explorationCoefficient = NeighborhoodGraph::property.insertionRadiusCoefficient;
       sc.useAllNodesInLeaf = true;
