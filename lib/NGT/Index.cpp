@@ -712,24 +712,24 @@ insertMultipleSearchResults(GraphIndex &neighborhoodGraph,
 	ObjectDistance	r;
 	r.distance = neighborhoodGraph.objectSpace->getComparator()(*output[idxi].object, *output[idxj].object);
 	r.id = output[idxj].id;
-    objs.push_back(r);
-    //bool occlude = false;
-    //float threshold = 0.86;
-    //for (ObjectDistances::iterator t = objs.begin(); t != objs.end(); t++) {
-    //    if (r.id == (*t).id) {
-    //        occlude = true;
-    //        break;
-    //    }
-    //    float djk = comparator(*objectRepository.get(r.id), *objectRepository.get((*t).id));//准备计算ri和hasAdd【t】的距离
-    //    float cos_ij = ((*t).distance + r.distance - djk) / 2 / sqrt(r.distance * (*t).distance);
-    //    if (cos_ij > threshold) {
-    //        occlude = true;
-    //        break;
-    //    }
-
-    //}
-    //if(!occlude)
-	   // objs.push_back(r);
+    //objs.push_back(r);
+    bool occlude = false;
+    float threshold = 0.86;
+    for (ObjectDistances::iterator t = objs.begin(); t != objs.end(); t++) {
+        if (r.id == (*t).id) {
+            occlude = true;
+            break;
+        }
+        float djk = comparator(*objectRepository.get(r.id), *objectRepository.get((*t).id));//准备计算ri和hasAdd【t】的距离
+        float cos_ij = ((*t).distance + r.distance - djk) / 2 / sqrt(r.distance * (*t).distance);
+        if (cos_ij > threshold) {
+            occlude = true;
+            break;
+        }
+       
+    }
+    if(!occlude)
+	    objs.push_back(r);
     
       }
       // sort and cut excess edges	    
@@ -1206,8 +1206,8 @@ GraphAndTreeIndex::createIndex(size_t threadPoolSize, size_t sizeOfRepository)
     return;
   }
 
-  int16_t temp = NeighborhoodGraph::property.edgeSizeForCreation;
-  NeighborhoodGraph::property.edgeSizeForCreation = 150;
+ // int16_t temp = NeighborhoodGraph::property.edgeSizeForCreation;
+  //NeighborhoodGraph::property.edgeSizeForCreation = 150;
   Timer	timer;
   size_t	timerInterval = 100000;
   size_t	timerCount = timerInterval;
@@ -1239,7 +1239,7 @@ GraphAndTreeIndex::createIndex(size_t threadPoolSize, size_t sizeOfRepository)
 	cerr << "NNTGIndex::insertGraphIndexByThread: Warning!! Thread response size is wrong." << endl;
 	cnt = output.size();
       }
-      NeighborhoodGraph::property.edgeSizeForCreation = temp;
+     // NeighborhoodGraph::property.edgeSizeForCreation = temp;
       insertMultipleSearchResults(*this, output, cnt);
 
       for (size_t i = 0; i < cnt; i++) {
