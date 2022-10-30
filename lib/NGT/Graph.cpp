@@ -722,7 +722,7 @@ NeighborhoodGraph::setupSeeds(NGT::SearchContainer &sc, ObjectDistances &seeds, 
 #endif
 
 	Distance distance = comparator(sc.object, *objectRepository.get(neighbor.id));
-    sc.size = 80;
+    sc.size = 120;
 	sc.distanceComputationCount++;
 	if (distance <= explorationRadius) {
 	  result.set(neighbor.id, distance);

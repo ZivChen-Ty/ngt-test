@@ -420,7 +420,7 @@ CreateIndexThread::run() {
       if (graphIndex.NeighborhoodGraph::property.graphType == NeighborhoodGraph::GraphTypeKNNG) {
 	graphIndex.searchForKNNGInsertion(obj, job.id, *rs);	// linear search
       } else {
-          //std::cerr << "===========================================================================begin search index.cpp:423 obj=" << std::endl;
+          std::cerr << "===========================================================================begin search index.cpp:423 obj=" << std::endl;
 	graphIndex.searchForNNGInsertion(obj, *rs);
       }
     } catch(NGT::Exception &err) {
