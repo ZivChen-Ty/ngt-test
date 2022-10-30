@@ -1206,6 +1206,8 @@ GraphAndTreeIndex::createIndex(size_t threadPoolSize, size_t sizeOfRepository)
     return;
   }
 
+  int16_t temp = NeighborhoodGraph::property.edgeSizeForCreation;
+  NeighborhoodGraph::property.edgeSizeForCreation = 150;
   Timer	timer;
   size_t	timerInterval = 100000;
   size_t	timerCount = timerInterval;
@@ -1216,8 +1218,6 @@ GraphAndTreeIndex::createIndex(size_t threadPoolSize, size_t sizeOfRepository)
   CreateIndexThreadPool threads(threadPoolSize);
 
   CreateIndexSharedData sd(*this);
-  int16_t temp = NeighborhoodGraph::property.edgeSizeForCreation;
-  NeighborhoodGraph::property.edgeSizeForCreation = 150;
   threads.setSharedData(&sd);
   threads.create();
   CreateIndexThreadPool::OutputJobQueue &output = threads.getOutputJobQueue();
@@ -1234,12 +1234,12 @@ GraphAndTreeIndex::createIndex(size_t threadPoolSize, size_t sizeOfRepository)
 	break;
       }
       threads.waitForFinish();
-      NeighborhoodGraph::property.edgeSizeForCreation = temp;
+      
       if (output.size() != cnt) {
 	cerr << "NNTGIndex::insertGraphIndexByThread: Warning!! Thread response size is wrong." << endl;
 	cnt = output.size();
       }
-
+      NeighborhoodGraph::property.edgeSizeForCreation = temp;
       insertMultipleSearchResults(*this, output, cnt);
 
       for (size_t i = 0; i < cnt; i++) {
