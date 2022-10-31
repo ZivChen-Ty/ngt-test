@@ -1228,7 +1228,7 @@ GraphAndTreeIndex::createIndex(size_t threadPoolSize, size_t sizeOfRepository)
     NGT::ObjectID id = 1;
     for (;;) {
         int16_t temp = this->NeighborhoodGraph::property.edgeSizeForCreation;
-        this->NeighborhoodGraph::property.edgeSizeForCreation = 150;
+        this->NeighborhoodGraph::property.edgeSizeForCreation = 200;
       size_t cnt = searchMultipleQueryForCreation(*this, id, job, threads, sizeOfRepository);
 
       if (cnt == 0) {
@@ -1240,9 +1240,9 @@ GraphAndTreeIndex::createIndex(size_t threadPoolSize, size_t sizeOfRepository)
 	cerr << "NNTGIndex::insertGraphIndexByThread: Warning!! Thread response size is wrong." << endl;
 	cnt = output.size();
       }
-      
+      this->NeighborhoodGraph::property.edgeSizeForCreation = temp;
       insertMultipleSearchResults(*this, output, cnt);
-this->NeighborhoodGraph::property.edgeSizeForCreation = temp;
+
       for (size_t i = 0; i < cnt; i++) {
 	CreateIndexJob &job = output[i];
 	if (((job.results->size() > 0) && ((*job.results)[0].distance != 0.0)) ||
