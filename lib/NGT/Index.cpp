@@ -1206,8 +1206,7 @@ GraphAndTreeIndex::createIndex(size_t threadPoolSize, size_t sizeOfRepository)
     return;
   }
 
-  int16_t temp = this->NeighborhoodGraph::property.edgeSizeForCreation;
-  this->NeighborhoodGraph::property.edgeSizeForCreation = 150;
+
   Timer	timer;
   size_t	timerInterval = 100000;
   size_t	timerCount = timerInterval;
@@ -1228,6 +1227,8 @@ GraphAndTreeIndex::createIndex(size_t threadPoolSize, size_t sizeOfRepository)
     CreateIndexJob job;
     NGT::ObjectID id = 1;
     for (;;) {
+        int16_t temp = this->NeighborhoodGraph::property.edgeSizeForCreation;
+        this->NeighborhoodGraph::property.edgeSizeForCreation = 150;
       size_t cnt = searchMultipleQueryForCreation(*this, id, job, threads, sizeOfRepository);
 
       if (cnt == 0) {
