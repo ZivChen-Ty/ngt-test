@@ -1228,7 +1228,7 @@ GraphAndTreeIndex::createIndex(size_t threadPoolSize, size_t sizeOfRepository)
     NGT::ObjectID id = 1;
     for (;;) {
         int16_t temp = this->NeighborhoodGraph::property.edgeSizeForCreation;
-        this->NeighborhoodGraph::property.edgeSizeForCreation = 150;
+        this->NeighborhoodGraph::property.edgeSizeForCreation = 200;
       size_t cnt = searchMultipleQueryForCreation(*this, id, job, threads, sizeOfRepository);
 
       if (cnt == 0) {
