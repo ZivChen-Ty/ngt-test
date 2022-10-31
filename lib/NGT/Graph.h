@@ -727,7 +727,7 @@ int count = 0;
 		//}
 		count++;
 	}
-	std::cerr << "addId=" << id  << "count=" << count << std::endl;
+	//std::cerr << "addId=" << id  << "count=" << count << std::endl;
 	/*for (ObjectDistances::iterator ri = results.begin(); ri != results.end(); ri++) {
 	  assert(id != (*ri).id);
 	  if (addEdge((*ri).id, id, (*ri).distance)) {
@@ -802,14 +802,14 @@ int count = 0;
 		  NGT::ObjectSpace::Comparator& comparator = objectSpace->getComparator();
 		  ObjectRepository& objectRepository = getObjectRepository();
 		  //unsigned start = 0;
-		  float threshold = 0.5; //所选角度的cos值，现在为60度
+		  float threshold = 0.86; //所选角度的cos值，现在为60度
 		 unsigned range = 100;//最大出度（可变）
 		  //std::vector<ObjectDistances> hasAdd;
 		  ObjectRepository& fr = objectSpace->getRepository();
 		  unsigned nd = fr.size();
 		  std::cerr << "reverse start " << std::endl;
 		  for (NGT::ObjectID n = 1; n < nd; n++) {
-			  std::cerr << "reverse times " << n << std::endl;
+			  std::cerr << "reverse times= " << n << std::endl;
 			  GraphNode& node = *getNode(n);
 			  //size_t kEdge = property.edgeSizeForCreation - 1;
 			  for (ObjectDistances::iterator t = node.begin(); t != node.end(); t++) {
@@ -820,7 +820,6 @@ int count = 0;
 				  GraphNode& nodeDes = *getNode(des);
 				  int dup = 0;
 				  {
-					  std::cerr << "first reverse start " << std::endl;
 					  //LockGuard guard(locks[des]);
 					  for (ObjectDistances::iterator j = nodeDes.begin(); j != nodeDes.end(); j++) {
 					  //for (NGT::ObjectID j = 1; j < nodeDes.size(); j++) {
@@ -831,16 +830,17 @@ int count = 0;
 							  break;
 						  }
 						  float djk = comparator(*objectRepository.get((*j).id), *objectRepository.get(n));//准备计算ri和hasAdd【t】的距离
-						  std::cerr << "second disjk=" << djk << std::endl;
+						  //std::cerr << "second disjk=" << djk << std::endl;
 						  float cos_ij = ((*t).distance + (*j).distance - djk) / 2 / sqrt((*t).distance * (*j).distance);
-						  std::cerr << "second cosij=" << cos_ij << std::endl;
+						  //std::cerr << "second cosij=" << cos_ij << std::endl;
 						  if (cos_ij > threshold) {
 							  dup = 1;
 							  break;
 						  }
 					  }
 					  if (dup == 0) {
-						  addEdgeDeletingExcessEdges(des, n, (*t).distance);
+						  addEdge(nodeDes, n, (*t).distance, true);
+						  //addEdgeDeletingExcessEdges(des, n, (*t).distance);
 					  }
 						  
 					  //temp_pool.push_back(node.begin());
