@@ -676,7 +676,7 @@ namespace NGT {
 	ObjectRepository& objectRepository = getObjectRepository();
 	//unsigned start = 0;
 	float threshold = 0.86; //所选角度的cos值，现在为60度
-	//unsigned range = 100;//最大出度（可变）
+	unsigned range = 120;//最大出度（可变）
 	//std::vector<ObjectDistances> hasAdd;
 	ObjectRepository& fr = objectSpace->getRepository();
 	//unsigned nd = fr.size();
@@ -716,7 +716,9 @@ int count = 0;
 			GraphNode& node =  *getNode((*ri).id);
 			addEdge(node, id, (*ri).distance, true);
 			
-			//count++;
+			count++;
+			if (count > range)
+				break;
 			//std::cerr << "addIf"<< std::endl;
 			/*if (addEdge((*ri).id, id, (*ri).distance)) {
 				truncateQueue.push((*ri).id);
@@ -725,9 +727,9 @@ int count = 0;
 			//addEdgeDeletingExcessEdges((*ri).id, id, (*ri).distance);
 		}
 		//}
-		count++;
+		//count++;
 	}
-	//std::cerr << "addId=" << id  << "count=" << count << std::endl;
+	std::cerr << "addId=" << id  << "count=" << count << std::endl;
 	/*for (ObjectDistances::iterator ri = results.begin(); ri != results.end(); ri++) {
 	  assert(id != (*ri).id);
 	  if (addEdge((*ri).id, id, (*ri).distance)) {
