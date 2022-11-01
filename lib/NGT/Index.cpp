@@ -793,7 +793,7 @@ insertMultipleSearchResultsForSSG(GraphIndex& neighborhoodGraph,
             std::sort(objs.begin(), objs.end());
             bool occlude = false;
                 float threshold = 0.86;
-                ObjectID id = *output[idxi].id;
+                ObjectID id = output[idxi].id;
                 for (ObjectDistances::iterator ri = objs.begin(); ri != objs.end(); ri++) {
                     assert(id != (*ri).id);
                     GraphNode& resultNode = neighborhoodGraph.getNode((*ri).id);
