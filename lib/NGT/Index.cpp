@@ -796,11 +796,11 @@ insertMultipleSearchResultsForSSG(GraphIndex& neighborhoodGraph,
                 ObjectID id = output[idxi].id;
                 for (ObjectDistances::iterator ri = objs.begin(); ri != objs.end(); ri++) {
                     assert(id != (*ri).id);
-                    GraphNode& resultNode = neighborhoodGraph.getNode((*ri).id);
+                    GraphNode& resultNode = *neighborhoodGraph.getNode((*ri).id);
                     bool occlude = false;
                     for (ObjectDistances::iterator t = resultNode.begin(); t != resultNode.end(); t++) {
                         if ((*ri).id == (*t).id) {
-                            std::cerr << "resultNodesize=" << count << std::endl;
+                           
                             occlude = true;
                             break;
                         }
