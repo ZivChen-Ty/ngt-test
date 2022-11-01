@@ -789,6 +789,7 @@ insertMultipleSearchResultsForSSG(GraphIndex& neighborhoodGraph,
                 objs.push_back(r);
 
             }
+            std::cerr << "=============================1213dd=" << idxi << std::endl;
             // sort and cut excess edges	    
             std::sort(objs.begin(), objs.end());
             bool occlude = false;
