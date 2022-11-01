@@ -785,28 +785,42 @@ insertMultipleSearchResultsForSSG(GraphIndex& neighborhoodGraph,
                 r.distance = neighborhoodGraph.objectSpace->getComparator()(*output[idxi].object, *output[idxj].object);
                 r.id = output[idxj].id;
                 //objs.push_back(r);
-                //bool occlude = false;
-                //float threshold = 0.86;
-                //for (ObjectDistances::iterator t = objs.begin(); t != objs.end(); t++) {
-                //    if (r.id == (*t).id) {
-                //        occlude = true;
-                //        break;
-                //    }
-                //    float djk = comparator(*objectRepository.get(r.id), *objectRepository.get((*t).id));//准备计算ri和hasAdd【t】的距离
-                //    float cos_ij = ((*t).distance + r.distance - djk) / 2 / sqrt(r.distance * (*t).distance);
-                //    if (cos_ij > threshold) {
-                //        occlude = true;
-                //        break;
-                //    }
-                //   
-                //}
-                //if(!occlude)
+                
                 objs.push_back(r);
 
             }
             // sort and cut excess edges	    
             std::sort(objs.begin(), objs.end());
-            
+            bool occlude = false;
+                float threshold = 0.86;
+                ObjectID id = *output[idxi].id;
+                for (ObjectDistances::iterator ri = objs.begin(); ri != objs.end(); ri++) {
+                    assert(id != (*ri).id);
+                    GraphNode& resultNode = neighborhoodGraph.getNode((*ri).id);
+                    bool occlude = false;
+                    for (ObjectDistances::iterator t = resultNode.begin(); t != resultNode.end(); t++) {
+                        if ((*ri).id == (*t).id) {
+                            std::cerr << "resultNodesize=" << count << std::endl;
+                            occlude = true;
+                            break;
+                        }
+                        float djk = comparator(*objectRepository.get(id), *objectRepository.get((*t).id));//准备计算ri和hasAdd【t】的距离
+                     
+                        float cos_ij = ((*t).distance + (*ri).distance - djk) / 2 / sqrt((*ri).distance * (*t).distance);
+                       
+                        if (cos_ij > threshold) {
+                            occlude = true;
+                            break;
+                        }
+
+                    }
+                    if (occlude) {
+                        objs.erase(ri);
+                    }
+                }
+                if (objs.size() > size) {
+                    objs.resize(size);
+                }
         } // for (size_t idxi ....
     } // if (neighborhoodGraph.graphType == NeighborhoodGraph::GraphTypeUDNNG)
     // insert resultant objects into the graph as edges

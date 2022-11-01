@@ -670,81 +670,96 @@ namespace NGT {
 	repository.insert(id, results);
       }
 
-      void insertANNGNode(ObjectID id, ObjectDistances &results) {
-	repository.insert(id, results);
-	NGT::ObjectSpace::Comparator& comparator = objectSpace->getComparator();
-	ObjectRepository& objectRepository = getObjectRepository();
-	//unsigned start = 0;
-	float threshold = 0.86; //所选角度的cos值，现在为60度
-	unsigned range = 100;//最大出度（可变）
-	//std::vector<ObjectDistances> hasAdd;
-	ObjectRepository& fr = objectSpace->getRepository();
-	//unsigned nd = fr.size();
-	//std::cerr << "sign nd=" << nd << std::endl;
-	std::queue<ObjectID> truncateQueue;
-int count = 0;
-	for (ObjectDistances::iterator ri = results.begin(); ri != results.end(); ri++) {
-		assert(id != (*ri).id);
-		//if (hasAdd.size() < range) {
-		GraphNode& resultNode = *getNode((*ri).id);
-		bool occlude = false;
-		
-		
-		//if (resultNode.size() < range) {
-			for (ObjectDistances::iterator t = resultNode.begin(); t != resultNode.end(); t++) {
-				if ((*ri).id == (*t).id) {
-					std::cerr << "resultNodesize=" << count << std::endl;
-					occlude = true;
-					break;
-			}
-				float djk = comparator(*objectRepository.get(id), *objectRepository.get((*t).id));//准备计算ri和hasAdd【t】的距离
-				//std::cerr << "sign first djk=" << djk << std::endl;
-				float cos_ij = ((*t).distance + (*ri).distance - djk) / 2 / sqrt((*ri).distance * (*t).distance);
-				//std::cerr << "sign first cosij=" << cos_ij << std::endl;
-				//std::cerr << "addId=" << id << "  tdistance=" << (*t).distance  << "  rdistance=" << (*ri).distance << "  djk=" << djk << "  cosij=" << cos_ij <<" count=" << count<< std::endl;
-				if (cos_ij > threshold) {
-					occlude = true;
-					break;
-				}
-				
-		}
-		//}
-		/*else {
-			occlude = true;
-		}*/
-		if (!occlude) {
-			GraphNode& node =  *getNode((*ri).id);
-			addEdge(node, id, (*ri).distance, true);
-			
-			count++;
-			if (count > range)
-				break;
-			//std::cerr << "addIf"<< std::endl;
-			/*if (addEdge((*ri).id, id, (*ri).distance)) {
-				truncateQueue.push((*ri).id);
-			}*/
-			
-			//addEdgeDeletingExcessEdges((*ri).id, id, (*ri).distance);
-		}
-		//}
-		//count++;
-	}
-	std::cerr << "addId=" << id  << "count=" << count << std::endl;
-	/*for (ObjectDistances::iterator ri = results.begin(); ri != results.end(); ri++) {
-	  assert(id != (*ri).id);
-	  if (addEdge((*ri).id, id, (*ri).distance)) {
-		  truncateQueue.push((*ri).id);
+//      void insertANNGNode(ObjectID id, ObjectDistances &results) {
+//	repository.insert(id, results);
+//	NGT::ObjectSpace::Comparator& comparator = objectSpace->getComparator();
+//	ObjectRepository& objectRepository = getObjectRepository();
+//	//unsigned start = 0;
+//	float threshold = 0.86; //所选角度的cos值，现在为60度
+//	unsigned range = 100;//最大出度（可变）
+//	//std::vector<ObjectDistances> hasAdd;
+//	ObjectRepository& fr = objectSpace->getRepository();
+//	//unsigned nd = fr.size();
+//	//std::cerr << "sign nd=" << nd << std::endl;
+//	std::queue<ObjectID> truncateQueue;
+//int count = 0;
+//	for (ObjectDistances::iterator ri = results.begin(); ri != results.end(); ri++) {
+//		assert(id != (*ri).id);
+//		//if (hasAdd.size() < range) {
+//		GraphNode& resultNode = *getNode((*ri).id);
+//		bool occlude = false;
+//		
+//		
+//		//if (resultNode.size() < range) {
+//			for (ObjectDistances::iterator t = resultNode.begin(); t != resultNode.end(); t++) {
+//				if ((*ri).id == (*t).id) {
+//					std::cerr << "resultNodesize=" << count << std::endl;
+//					occlude = true;
+//					break;
+//			}
+//				float djk = comparator(*objectRepository.get(id), *objectRepository.get((*t).id));//准备计算ri和hasAdd【t】的距离
+//				//std::cerr << "sign first djk=" << djk << std::endl;
+//				float cos_ij = ((*t).distance + (*ri).distance - djk) / 2 / sqrt((*ri).distance * (*t).distance);
+//				//std::cerr << "sign first cosij=" << cos_ij << std::endl;
+//				//std::cerr << "addId=" << id << "  tdistance=" << (*t).distance  << "  rdistance=" << (*ri).distance << "  djk=" << djk << "  cosij=" << cos_ij <<" count=" << count<< std::endl;
+//				if (cos_ij > threshold) {
+//					occlude = true;
+//					break;
+//				}
+//				
+//		}
+//		//}
+//		/*else {
+//			occlude = true;
+//		}*/
+//		if (!occlude) {
+//			GraphNode& node =  *getNode((*ri).id);
+//			addEdge(node, id, (*ri).distance, true);
+//			
+//			count++;
+//			if (count > range)
+//				break;
+//			//std::cerr << "addIf"<< std::endl;
+//			/*if (addEdge((*ri).id, id, (*ri).distance)) {
+//				truncateQueue.push((*ri).id);
+//			}*/
+//			
+//			//addEdgeDeletingExcessEdges((*ri).id, id, (*ri).distance);
+//		}
+//		//}
+//		//count++;
+//	}
+//	std::cerr << "addId=" << id  << "count=" << count << std::endl;
+//	/*for (ObjectDistances::iterator ri = results.begin(); ri != results.end(); ri++) {
+//	  assert(id != (*ri).id);
+//	  if (addEdge((*ri).id, id, (*ri).distance)) {
+//		  truncateQueue.push((*ri).id);
+//	  }
+//	}*/
+//	/*while (!truncateQueue.empty()) {
+//	  ObjectID tid = truncateQueue.front();
+//	  truncateEdges(tid);
+//	  std::cerr << "truncateEdge" << tid  << std::endl;
+//	  truncateQueue.pop();
+//	}*/
+//	return;
+//      }
+	  void insertANNGNode(ObjectID id, ObjectDistances& results) {
+		  repository.insert(id, results);
+		  std::queue<ObjectID> truncateQueue;
+		  for (ObjectDistances::iterator ri = results.begin(); ri != results.end(); ri++) {
+			  assert(id != (*ri).id);
+			  if (addEdge((*ri).id, id, (*ri).distance)) {
+				  truncateQueue.push((*ri).id);
+			  }
+		  }
+		  while (!truncateQueue.empty()) {
+			  ObjectID tid = truncateQueue.front();
+			  truncateEdges(tid);
+			  truncateQueue.pop();
+		  }
+		  return;
 	  }
-	}*/
-	/*while (!truncateQueue.empty()) {
-	  ObjectID tid = truncateQueue.front();
-	  truncateEdges(tid);
-	  std::cerr << "truncateEdge" << tid  << std::endl;
-	  truncateQueue.pop();
-	}*/
-	return;
-      }
-
 	  void insertIANNGNode(ObjectID id, ObjectDistances& results) {
 		  repository.insert(id, results);
 		  for (ObjectDistances::iterator ri = results.begin(); ri != results.end(); ri++) {
@@ -753,6 +768,9 @@ int count = 0;
 		  }
 		  return;
 	  }
+
+
+
  //     void insertIANNGNode(ObjectID id, ObjectDistances &results) {
 	//repository.insert(id, results);
 	//std::cerr << "sign1" << std::endl;
