@@ -805,9 +805,10 @@ insertMultipleSearchResultsForSSG(GraphIndex& neighborhoodGraph,
 
             }
             // sort and cut excess edges	    
-            std::sort(objs.begin(), objs.end());
             
-        } // for (size_t idxi ....
+            
+        }
+        std::sort(objs.begin(), objs.end());// for (size_t idxi ....
     } // if (neighborhoodGraph.graphType == NeighborhoodGraph::GraphTypeUDNNG)
     // insert resultant objects into the graph as edges
     //std::cerr << "================================================================================ index.cpp:734 dataSize=" <<dataSize << std::endl;
