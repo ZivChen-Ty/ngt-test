@@ -686,79 +686,7 @@ searchMultipleQueryForCreation(GraphIndex &neighborhoodGraph,
 }
 
 static void
-insertMultipleSearchResults(GraphIndex &neighborhoodGraph, 
-			    CreateIndexThreadPool::OutputJobQueue &output, 
-			    size_t dataSize)
-{
-  // compute distances among all of the resultant objects
-  if (neighborhoodGraph.NeighborhoodGraph::property.graphType == NeighborhoodGraph::GraphTypeANNG ||
-      neighborhoodGraph.NeighborhoodGraph::property.graphType == NeighborhoodGraph::GraphTypeIANNG ||
-      neighborhoodGraph.NeighborhoodGraph::property.graphType == NeighborhoodGraph::GraphTypeONNG ||
-      neighborhoodGraph.NeighborhoodGraph::property.graphType == NeighborhoodGraph::GraphTypeDNNG) {
-    // This processing occupies about 30% of total indexing time when batch size is 200.
-    // Only initial batch objects should be connected for each other.
-    // The number of nodes in the graph is checked to know whether the batch is initial.
-    //size_t size = NeighborhoodGraph::property.edgeSizeForCreation;
-    size_t size = neighborhoodGraph.NeighborhoodGraph::property.edgeSizeForCreation;
-    // add distances from a current object to subsequence objects to imitate of sequential insertion.
-
-    sort(output.begin(), output.end());	// sort by batchIdx
-    NGT::ObjectSpace::Comparator& comparator = neighborhoodGraph.objectSpace->getComparator();
-    ObjectRepository& objectRepository = neighborhoodGraph.objectSpace->getRepository();
-    for (size_t idxi = 0; idxi < dataSize; idxi++) {
-      // add distances
-      ObjectDistances &objs = *output[idxi].results;
-      for (size_t idxj = 0; idxj < idxi; idxj++) {
-	ObjectDistance	r;
-	r.distance = neighborhoodGraph.objectSpace->getComparator()(*output[idxi].object, *output[idxj].object);
-	r.id = output[idxj].id;
-    //objs.push_back(r);
-    //bool occlude = false;
-    //float threshold = 0.86;
-    //for (ObjectDistances::iterator t = objs.begin(); t != objs.end(); t++) {
-    //    if (r.id == (*t).id) {
-    //        occlude = true;
-    //        break;
-    //    }
-    //    float djk = comparator(*objectRepository.get(r.id), *objectRepository.get((*t).id));//准备计算ri和hasAdd【t】的距离
-    //    float cos_ij = ((*t).distance + r.distance - djk) / 2 / sqrt(r.distance * (*t).distance);
-    //    if (cos_ij > threshold) {
-    //        occlude = true;
-    //        break;
-    //    }
-    //   
-    //}
-    //if(!occlude)
-	    objs.push_back(r);
-    
-      }
-      // sort and cut excess edges	    
-      std::sort(objs.begin(), objs.end());
-     if (objs.size() > size) {
-	objs.resize(size);
-      }
-    } // for (size_t idxi ....
-  } // if (neighborhoodGraph.graphType == NeighborhoodGraph::GraphTypeUDNNG)
-  // insert resultant objects into the graph as edges
-  //std::cerr << "================================================================================ index.cpp:734 dataSize=" <<dataSize << std::endl;
-  for (size_t i = 0; i < dataSize; i++) {
-    CreateIndexJob &gr = output[i];
-    if ((*gr.results).size() == 0) {
-    }
-    if (static_cast<int>(gr.id) > neighborhoodGraph.NeighborhoodGraph::property.edgeSizeForCreation &&
-	static_cast<int>(gr.results->size()) < neighborhoodGraph.NeighborhoodGraph::property.edgeSizeForCreation) {
-      cerr << "createIndex: Warning. The specified number of edges could not be acquired, because the pruned parameter [-S] might be set." << endl;
-      cerr << "  The node id=" << gr.id << endl;
-      cerr << "  The number of edges for the node=" << gr.results->size() << endl;
-      cerr << "  The pruned parameter (edgeSizeForSearch [-S])=" << neighborhoodGraph.NeighborhoodGraph::property.edgeSizeForSearch << endl;
-    }
-    //std::cerr << "======================================================================================before insert where index.cpp:734 id=" << gr.id << std::endl;
-    neighborhoodGraph.insertNode(gr.id, *gr.results);
-  }
-}
-
-static void
-insertMultipleSearchResultsForSSG(GraphIndex& neighborhoodGraph,
+insertMultipleSearchResults(GraphIndex& neighborhoodGraph,
     CreateIndexThreadPool::OutputJobQueue& output,
     size_t dataSize)
 {
@@ -775,8 +703,7 @@ insertMultipleSearchResultsForSSG(GraphIndex& neighborhoodGraph,
         // add distances from a current object to subsequence objects to imitate of sequential insertion.
 
         sort(output.begin(), output.end());	// sort by batchIdx
-        NGT::ObjectSpace::Comparator& comparator = neighborhoodGraph.objectSpace->getComparator();
-        ObjectRepository& objectRepository = neighborhoodGraph.objectSpace->getRepository();
+
         for (size_t idxi = 0; idxi < dataSize; idxi++) {
             // add distances
             ObjectDistances& objs = *output[idxi].results;
@@ -784,32 +711,16 @@ insertMultipleSearchResultsForSSG(GraphIndex& neighborhoodGraph,
                 ObjectDistance	r;
                 r.distance = neighborhoodGraph.objectSpace->getComparator()(*output[idxi].object, *output[idxj].object);
                 r.id = output[idxj].id;
-                //objs.push_back(r);
-                //bool occlude = false;
-                //float threshold = 0.86;
-                //for (ObjectDistances::iterator t = objs.begin(); t != objs.end(); t++) {
-                //    if (r.id == (*t).id) {
-                //        occlude = true;
-                //        break;
-                //    }
-                //    float djk = comparator(*objectRepository.get(r.id), *objectRepository.get((*t).id));//准备计算ri和hasAdd【t】的距离
-                //    float cos_ij = ((*t).distance + r.distance - djk) / 2 / sqrt(r.distance * (*t).distance);
-                //    if (cos_ij > threshold) {
-                //        occlude = true;
-                //        break;
-                //    }
-                //   
-                //}
-                //if(!occlude)
                 objs.push_back(r);
-
             }
             // sort and cut excess edges	    
             std::sort(objs.begin(), objs.end());
+            if (objs.size() > size) {
+                objs.resize(size);
+            }
         } // for (size_t idxi ....
     } // if (neighborhoodGraph.graphType == NeighborhoodGraph::GraphTypeUDNNG)
     // insert resultant objects into the graph as edges
-    //std::cerr << "================================================================================ index.cpp:734 dataSize=" <<dataSize << std::endl;
     for (size_t i = 0; i < dataSize; i++) {
         CreateIndexJob& gr = output[i];
         if ((*gr.results).size() == 0) {
@@ -821,11 +732,79 @@ insertMultipleSearchResultsForSSG(GraphIndex& neighborhoodGraph,
             cerr << "  The number of edges for the node=" << gr.results->size() << endl;
             cerr << "  The pruned parameter (edgeSizeForSearch [-S])=" << neighborhoodGraph.NeighborhoodGraph::property.edgeSizeForSearch << endl;
         }
-        //std::cerr << "======================================================================================before insert where index.cpp:734 id=" << gr.id << std::endl;
-        //std::cerr << "=============================grid=" << gr.id << std::endl;
         neighborhoodGraph.insertNode(gr.id, *gr.results);
     }
 }
+
+//static void
+//insertMultipleSearchResultsForSSG(GraphIndex& neighborhoodGraph,
+//    CreateIndexThreadPool::OutputJobQueue& output,
+//    size_t dataSize)
+//{
+//    // compute distances among all of the resultant objects
+//    if (neighborhoodGraph.NeighborhoodGraph::property.graphType == NeighborhoodGraph::GraphTypeANNG ||
+//        neighborhoodGraph.NeighborhoodGraph::property.graphType == NeighborhoodGraph::GraphTypeIANNG ||
+//        neighborhoodGraph.NeighborhoodGraph::property.graphType == NeighborhoodGraph::GraphTypeONNG ||
+//        neighborhoodGraph.NeighborhoodGraph::property.graphType == NeighborhoodGraph::GraphTypeDNNG) {
+//        // This processing occupies about 30% of total indexing time when batch size is 200.
+//        // Only initial batch objects should be connected for each other.
+//        // The number of nodes in the graph is checked to know whether the batch is initial.
+//        //size_t size = NeighborhoodGraph::property.edgeSizeForCreation;
+//        size_t size = neighborhoodGraph.NeighborhoodGraph::property.edgeSizeForCreation;
+//        // add distances from a current object to subsequence objects to imitate of sequential insertion.
+//
+//        sort(output.begin(), output.end());	// sort by batchIdx
+//        NGT::ObjectSpace::Comparator& comparator = neighborhoodGraph.objectSpace->getComparator();
+//        ObjectRepository& objectRepository = neighborhoodGraph.objectSpace->getRepository();
+//        for (size_t idxi = 0; idxi < dataSize; idxi++) {
+//            // add distances
+//            ObjectDistances& objs = *output[idxi].results;
+//            for (size_t idxj = 0; idxj < idxi; idxj++) {
+//                ObjectDistance	r;
+//                r.distance = neighborhoodGraph.objectSpace->getComparator()(*output[idxi].object, *output[idxj].object);
+//                r.id = output[idxj].id;
+//                //objs.push_back(r);
+//                //bool occlude = false;
+//                //float threshold = 0.86;
+//                //for (ObjectDistances::iterator t = objs.begin(); t != objs.end(); t++) {
+//                //    if (r.id == (*t).id) {
+//                //        occlude = true;
+//                //        break;
+//                //    }
+//                //    float djk = comparator(*objectRepository.get(r.id), *objectRepository.get((*t).id));//准备计算ri和hasAdd【t】的距离
+//                //    float cos_ij = ((*t).distance + r.distance - djk) / 2 / sqrt(r.distance * (*t).distance);
+//                //    if (cos_ij > threshold) {
+//                //        occlude = true;
+//                //        break;
+//                //    }
+//                //   
+//                //}
+//                //if(!occlude)
+//                objs.push_back(r);
+//
+//            }
+//            // sort and cut excess edges	    
+//            std::sort(objs.begin(), objs.end());
+//        } // for (size_t idxi ....
+//    } // if (neighborhoodGraph.graphType == NeighborhoodGraph::GraphTypeUDNNG)
+//    // insert resultant objects into the graph as edges
+//    //std::cerr << "================================================================================ index.cpp:734 dataSize=" <<dataSize << std::endl;
+//    for (size_t i = 0; i < dataSize; i++) {
+//        CreateIndexJob& gr = output[i];
+//        if ((*gr.results).size() == 0) {
+//        }
+//        if (static_cast<int>(gr.id) > neighborhoodGraph.NeighborhoodGraph::property.edgeSizeForCreation &&
+//            static_cast<int>(gr.results->size()) < neighborhoodGraph.NeighborhoodGraph::property.edgeSizeForCreation) {
+//            cerr << "createIndex: Warning. The specified number of edges could not be acquired, because the pruned parameter [-S] might be set." << endl;
+//            cerr << "  The node id=" << gr.id << endl;
+//            cerr << "  The number of edges for the node=" << gr.results->size() << endl;
+//            cerr << "  The pruned parameter (edgeSizeForSearch [-S])=" << neighborhoodGraph.NeighborhoodGraph::property.edgeSizeForSearch << endl;
+//        }
+//        //std::cerr << "======================================================================================before insert where index.cpp:734 id=" << gr.id << std::endl;
+//        //std::cerr << "=============================grid=" << gr.id << std::endl;
+//        neighborhoodGraph.insertNode(gr.id, *gr.results);
+//    }
+//}
 
 void 
 GraphIndex::createIndex(size_t threadPoolSize, size_t sizeOfRepository) //xa

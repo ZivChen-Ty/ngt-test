@@ -699,7 +699,7 @@ int count = 0;
 			}
 				float djk = comparator(*objectRepository.get(id), *objectRepository.get((*t).id));//准备计算ri和hasAdd【t】的距离
 				//std::cerr << "sign first djk=" << djk << std::endl;
-				float cos_ij = ((*t).distance * (*t).distance + (*ri).distance * (*ri).distance - djk) / 2 / ((*ri).distance * (*t).distance);
+				float cos_ij = ((*t).distance * (*t).distance + (*ri).distance * (*ri).distance - djk * djk) / 2 / ((*ri).distance * (*t).distance);
 				//std::cerr << "sign first cosij=" << cos_ij << std::endl;
 				//std::cerr << "addId=" << id << "  tdistance=" << (*t).distance  << "  rdistance=" << (*ri).distance << "  djk=" << djk << "  cosij=" << cos_ij <<" count=" << count<< std::endl;
 				if (cos_ij > threshold) {
@@ -717,14 +717,6 @@ int count = 0;
 			addEdge(node, id, (*ri).distance, true);
 			
 			count++;
-			if (count > range)
-				break;
-			//std::cerr << "addIf"<< std::endl;
-			/*if (addEdge((*ri).id, id, (*ri).distance)) {
-				truncateQueue.push((*ri).id);
-			}*/
-			
-			//addEdgeDeletingExcessEdges((*ri).id, id, (*ri).distance);
 		}
 		//}
 		//count++;
